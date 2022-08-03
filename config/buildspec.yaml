@@ -17,7 +17,7 @@ phases:
     post_build:
         commands:
             - echo "Updating Lambda Function..."
-            - aws lambda update-function-code --function-name brekrr-common-microservice-$env_type --zip-file fileb://artifact.zip
+            - aws lambda update-function-code --function-name brekrr-idea-microservice-dev --zip-file fileb://artifact.zip
 
 artifacts:
     files:
