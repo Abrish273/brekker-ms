@@ -7,7 +7,7 @@ const checkForPlan = async (req,res,next) =>{
         return res.status(401).json({status:'fail', message:'unauthorized'})
     }
     req.plan ={}
-    const userPlan = await User.findOne({user_id:user_id}).select('subscriptionPlan');
+    const userPlan = await User.findOne({_id:user_id}).select('subscriptionPlan');
     if(userPlan && userPlan !== 0 ){
         // console.log(userPlan.subscriptionPlan)
         req.plan.name = userPlan.subscriptionPlan;
@@ -24,7 +24,7 @@ const checkForPlan = async (req,res,next) =>{
         
         next()
     }else{
-        return res.status(401).json({status:'fail', message:'user doesnt exist'})
+        return res.status(500).json({status:'fail', message:'user doesnt exist'})
     }
 }
 
