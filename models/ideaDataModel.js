@@ -39,7 +39,6 @@ const ideabrekrrDataSchema = new mongoose.Schema({
         },
         coordinates : {
             type : [Number],
-            // required : true
         }
     },
 }, opts)
@@ -50,6 +49,6 @@ ideabrekrrDataSchema.virtual('age').get(function(){
 
 ideabrekrrDataSchema.index({ location: "2dsphere" });
 
-const myDB = mongoose.connection.useDb('idea_brekrr');
+const myDB = mongoose.connection.useDb(`idea_brekrr-${process.env.envtype}`);
 const IdeaData = myDB.model("IdeaData", ideabrekrrDataSchema);
 module.exports = IdeaData;

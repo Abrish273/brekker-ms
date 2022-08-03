@@ -1,6 +1,6 @@
 const IdeaData = require('../models/ideaDataModel')
 const IdeaBlocked = require('../models/ideaBlockModel')
-const sdk = require('api')('@cometchat/v3#ev191hl5kwgink');
+const axios = require('axios').default;
 
 exports.getIdeaProfile = async (req,res,next)=>{
     try {
@@ -38,16 +38,32 @@ exports.registerIdeaProfile = async (req,res,next)=>{
             user = await IdeaData.create(req.body);
             const uid = req.body.user_id + "idea";
             //create user for chats
-            sdk['creates-user']({
-              uid: uid,
-              name: req.body.name,
-              avatar: req.body.images[0].image_URL,
-              withAuthToken: false,
-            }, {
-                apiKey: process.env.cometchat_api_key
-            })
-              .then(res => console.log(res))
-              .catch(err => console.error(err));
+          
+            const options = {
+                method: 'POST',
+                url: 'https://214977e994c46638.api-us.cometchat.io/v3/users',
+                headers: {
+                    apiKey: process.env.cometchat_api_key,
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json'
+                },
+                data: {
+                    // metadata: {'@private': {email: 'user@email.com', contactNumber: '0123456789'}},
+                    uid: uid,
+                    name: req.body.name,
+                    avatar: req.body.images[0].image_URL,
+                    withAuthToken: false,
+                }
+                };
+
+                axios
+                .request(options)
+                .then(function (response) {
+                    console.log(response.data);
+                })
+                .catch(function (error) {
+                    console.error(error);
+                });
                     
             res.status(200).json({
                 status:"success",
@@ -80,9 +96,28 @@ exports.updateIdeaProfile = async (req,res,next)=>{
 
         //finish this
         if(req.body.name && req.body.images &&  req.body.images[0].image_URL){
-            sdk.updateUser({name: req.body.name , avatar: req.body.images[0].image_URL}, {uid: uid,  apiKey: process.env.cometchat_api_key})
-              .then(res => console.log(res))
-              .catch(err => console.error(err));
+            const options = {
+                method: 'PUT',
+                url: `https://214977e994c46638.api-us.cometchat.io/v3/users/$uid`,
+                headers: {
+                    apiKey: process.env.cometchat_api_key,
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json'
+                },
+                data: {
+                    name: req.body.name,
+                    avatar: req.body.images[0].image_URL
+                }
+                };
+
+                axios
+                .request(options)
+                .then(function (response) {
+                    console.log(response.data);
+                })
+                .catch(function (error) {
+                    console.error(error);
+                });
         }
         
         res.status(200).json({

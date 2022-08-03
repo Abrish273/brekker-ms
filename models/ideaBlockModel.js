@@ -6,7 +6,7 @@ const ideaBlockModel = new mongoose.Schema({
     blockedOn : { type : Date, default: Date.now() },
 }, { timestamps: true })
 
-const myDB = mongoose.connection.useDb('idea_brekrr');
+const myDB = mongoose.connection.useDb(`idea_brekrr-${process.env.envtype}`);
 
 const IdeaBlocked = myDB.model("IdeaBlocked", ideaBlockModel);
 module.exports = IdeaBlocked;

@@ -32,12 +32,4 @@ app.use(middleware.decodeToken);
 
 app.use("/ideabrekrr", ideaRouter)
 
-
-const port = process.env.PORT || 3000;
-
-app.listen(port, ()=> console.log(`Listening on port ${port}`))
-
-
-//Todo:
-//add error loggers 
-//add analytics
+module.exports = app;

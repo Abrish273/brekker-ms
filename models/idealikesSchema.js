@@ -17,7 +17,7 @@ const likesSchema = new mongoose.Schema({
     acceptedOn : { type : Date },
 }, { timestamps: true })
 
-const myDB = mongoose.connection.useDb('idea_brekrr');
+const myDB = mongoose.connection.useDb(`idea_brekrr-${process.env.envtype}`);
 
 const Likes = myDB.model("Likes", likesSchema);
 module.exports = Likes;

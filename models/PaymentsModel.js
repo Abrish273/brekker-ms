@@ -11,6 +11,5 @@ var PaymentsSchema = new mongoose.Schema(
 },{ timestamps: true }
 );
 
-const myDB = mongoose.connection.useDb('Users');
-
+const myDB = mongoose.connection.useDb(`Users-${process.env.envtype}`);
 module.exports = myDB.model("Payments", PaymentsSchema);

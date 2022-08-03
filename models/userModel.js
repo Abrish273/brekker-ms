@@ -29,19 +29,7 @@ const userSchema = new mongoose.Schema({
 },{ timestamps: true })
 
 userSchema.index({ location: "2dsphere" });
-const myDB = mongoose.connection.useDb('Users');
+const myDB = mongoose.connection.useDb(`Users-${process.env.envtype}`);
 
 const User = myDB.model("User", userSchema);
 module.exports = User;
-
-//Todo : update this
-// icognitomode
-// accountCreation
-// snoozemood
-// dateMode
-// Queries
-// Notification Settings
-// reminders for payments
-
-
-

@@ -1,7 +1,7 @@
 const IdeaData = require('../models/ideaDataModel');
 const Likes = require('../models/idealikesSchema');
 const User = require('../models/userModel');
-const sdk = require('api')('@cometchat/v3#ev191hl5kwgink');
+const axios = require('axios').default;
 const {sendNotif} =require('./Notifs')
 
 exports.getRecommendations = async (req,res,next)=>{
@@ -51,7 +51,9 @@ exports.getRecommendations = async (req,res,next)=>{
                  $geometry: {
                   type: "Point",
                   coordinates: [long, latt]
-                 }
+                 },
+                //  $spherical : true
+
                 }
                }}, {lookingFor: {$in: lookingFor}}, {user_id: {$nin: seenProfiles}} ]}).limit(limit * 1).skip((page - 1) * limit)
             
@@ -79,7 +81,9 @@ exports.getRecommendations = async (req,res,next)=>{
                  $geometry: {
                   type: "Point",
                   coordinates: [long, latt]
-                 }
+                 },
+                //  $spherical : true
+
                 }
                }},{lookingFor: {$in: lookingFor}},{user_id: {$nin: seenProfiles}} ]}).limit(limit * 1).skip((page - 1) * limit).lean()
             
@@ -105,7 +109,7 @@ exports.likeProfile = async (req,res) =>{
     try {
         const {user_id, target_id, action } = req.body;
         const result = await Likes.findOne({user_id:user_id, target_id:target_id});
-        const pokes = await User.Find({user_id:user_id}).select('pokesLeft -_id')
+        const pokes = await User.find({user_id:user_id}).select('pokesLeft -_id')
         var pokesLeft = pokes.pokesLeft
         // console.log(result)
         if(result && result.length!==0){
@@ -124,9 +128,22 @@ exports.likeProfile = async (req,res) =>{
                 const frndid = target_id+"idea";
                 const userdid = user_id+"idea";
                 // Create a room for chat
-                sdk['add-friend']({accepted: [`${frndid}`]},{uid: userdid, apiKey: process.env.cometchat_api_key})
-                .then(res => console.log(res))
-                .catch(err => console.error(err));
+                const options = {
+                    method: 'POST',
+                    url: `https://214977e994c46638.api-us.cometchat.io/v3/users/${userdid}/friends`,
+                    headers: {apiKey: process.env.cometchat_api_key, 'Content-Type': 'application/json', Accept: 'application/json'},
+                    data: {accepted: [`${frndid}`]}
+                    };
+    
+                    axios
+                    .request(options)
+                    .then(function (response) {
+                        console.log(response.data);
+                    })
+                    .catch(function (error) {
+                        console.error(error);
+                    });
+    
                 // send Notification
                 const user1token = await User.findOne({user_id:user_id}).select('notifToken -_id')
                 const user2token = await User.findOne({user_id:target_id}).select('notifToken -_id')
