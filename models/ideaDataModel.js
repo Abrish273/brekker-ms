@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const opts = { toJSON: { virtuals: true } };
 
 const ideabrekrrDataSchema = new mongoose.Schema({
-    user_id:{type:String},
+    _id:{type:String},
     headline:{type: String},
     name:{type: String},
     bio: {type: String},
@@ -15,7 +15,7 @@ const ideabrekrrDataSchema = new mongoose.Schema({
     experience:{type: String},
     educationLevel:{type: String}, //enum:["HighSchool", "In College", "Undergraduate school", "In grad school", ]
     images:[{
-        priority : {type: Number, default: 1},
+        priority : {type: Number},
         image_URL:{type: String}
     }],
     work:[{

@@ -8,7 +8,7 @@ exports.getIdeaProfile = async (req,res,next)=>{
         // console.log(req.query.user_id)
         if(req.query.user_id != null){
             user_id=req.query.user_id;
-            const user = await IdeaData.findOne({user_id:user_id});
+            const user = await IdeaData.findOne({_id:user_id});
             res.status(200).json({
                 status:"success",
                 user
@@ -16,7 +16,7 @@ exports.getIdeaProfile = async (req,res,next)=>{
         }else{
             user_id = req.user.user_id;
             // console.log(user_id)
-            const user = await IdeaData.findOne({user_id:user_id});
+            const user = await IdeaData.findOne({_id:user_id});
             res.status(200).json({
                 status:"success",
                 user
@@ -33,7 +33,7 @@ exports.getIdeaProfile = async (req,res,next)=>{
 
 exports.registerIdeaProfile = async (req,res,next)=>{
     try {
-        var user = await IdeaData.findOne({user_id: req.body.user_id});
+        var user = await IdeaData.findOne({_id: req.body.user_id});
         if(user === null){
             user = await IdeaData.create(req.body);
             const uid = req.body.user_id + "idea";
@@ -88,7 +88,7 @@ exports.registerIdeaProfile = async (req,res,next)=>{
 }
 exports.updateIdeaProfile = async (req,res,next)=>{
     try {
-        const user = await IdeaData.findOneAndUpdate({user_id:req.user.user_id}, req.body,{
+        const user = await IdeaData.findOneAndUpdate({_id:req.user.user_id}, req.body,{
             new:true,
             runValidators:true
         });
@@ -98,7 +98,7 @@ exports.updateIdeaProfile = async (req,res,next)=>{
         if(req.body.name && req.body.images &&  req.body.images[0].image_URL){
             const options = {
                 method: 'PUT',
-                url: `https://214977e994c46638.api-us.cometchat.io/v3/users/$uid`,
+                url: `https://214977e994c46638.api-us.cometchat.io/v3/users/${uid}`,
                 headers: {
                     apiKey: process.env.cometchat_api_key,
                     'Content-Type': 'application/json',
@@ -154,6 +154,68 @@ exports.reportProfile = async(res, req, next) =>{
         }
 
     } catch (error) {
+        res.status(500).json({
+            status:"fail",
+            msg:"Internal Server Error"
+        })
+    }
+}
+
+
+exports.hideIdeaProfile = async(req, res, next) =>{
+    try {
+        const modeActivated = req.query.modeActivated;
+        const user_id = req.user.user_id+"idea"
+
+        const user = await IdeaData.findOneAndUpdate({_id:req.user.user_id}, modeActivated ,{
+            new:true,
+            runValidators:true
+        });
+        //finish this
+        if(modeActivated === false){
+                        
+                const options = {
+                    method: 'DELETE',
+                    url: 'https://214977e994c46638.api-us.cometchat.io/v3/users',
+                    headers: {apiKey: process.env.cometchat_api_key, 'Content-Type': 'application/json', Accept: 'application/json'},
+                    data: {uidsToDeactivate:  [user_id]}
+                };
+                
+                axios
+                    .request(options)
+                    .then(function (response) {
+                    console.log(response.data);
+                    })
+                    .catch(function (error) {
+                    console.error(error);
+                    });
+        }else{
+            const options = {
+                method: 'DELETE',
+                url: 'https://214977e994c46638.api-us.cometchat.io/v3/users',
+                headers: {apiKey: process.env.cometchat_api_key, 'Content-Type': 'application/json', Accept: 'application/json'},
+                data: {uidsToDeactivate:  [user_id]}
+            };
+            
+            axios
+                .request(options)
+                .then(function (response) {
+                console.log(response.data);
+                })
+                .catch(function (error) {
+                console.error(error);
+                });
+        }
+
+
+
+        
+        res.status(200).json({
+            status:"success",
+            user
+        })
+    } catch (e) {
+        console.log("Error from route: "+e)
         res.status(500).json({
             status:"fail",
             msg:"Internal Server Error"

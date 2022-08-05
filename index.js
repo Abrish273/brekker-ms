@@ -8,9 +8,7 @@ const ideaRouter = require("./routes/ideaRoutes")
 
 const app = express()
 dotenv.config()
-//use this for Production
-// const mongoURL = `mongodb://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_IP}:${MONGO_PORT}/brekrr_user?authSource=admin`
-//local
+
 const mongoURL = process.env.MONGO_URL
 const connectWithRetry = () =>{
 mongoose

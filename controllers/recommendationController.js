@@ -6,7 +6,7 @@ const {sendNotif} =require('./Notifs')
 
 exports.getRecommendations = async (req,res,next)=>{
     try {
-        const userData = await IdeaData.findOne({user_id:req.user.user_id}).select('lookingFor industry education activeStatus location languages');
+        const userData = await IdeaData.findOne({_id:req.user.user_id}).select('lookingFor industry education activeStatus location languages');
         var latt, long; 
         if(!req.query.latt && !req.query.long){
             latt = userData.location.coordinates[1];
@@ -35,6 +35,8 @@ exports.getRecommendations = async (req,res,next)=>{
         const { page = 1, limit = 50 } = req.query;
 
         const seenProfiles = await Likes.find({user_id:req.user.user_id}).distinct('target_id')
+        seenProfiles.push(req.user.user_id)
+
 
         if(req.plan.name ==="trial"){
             //Free plan
@@ -109,7 +111,7 @@ exports.likeProfile = async (req,res) =>{
     try {
         const {user_id, target_id, action } = req.body;
         const result = await Likes.findOne({user_id:user_id, target_id:target_id});
-        const pokes = await User.find({user_id:user_id}).select('pokesLeft -_id')
+        const pokes = await User.findOne({_id:user_id}).select('pokesLeft -_id')
         var pokesLeft = pokes.pokesLeft
         // console.log(result)
         if(result && result.length!==0){
@@ -145,8 +147,8 @@ exports.likeProfile = async (req,res) =>{
                     });
     
                 // send Notification
-                const user1token = await User.findOne({user_id:user_id}).select('notifToken -_id')
-                const user2token = await User.findOne({user_id:target_id}).select('notifToken -_id')
+                const user1token = await User.findOne({_id:user_id}).select('notifToken -_id')
+                const user2token = await User.findOne({_id:target_id}).select('notifToken -_id')
                 let title= "Its a Connect"
                 let body = "You have matched with a connect"
                 let redirectUrl = "/ideabrekrr/chats"
@@ -172,7 +174,7 @@ exports.likeProfile = async (req,res) =>{
                         const redirectUrl ="/ideabrekrr/profile/:id"
                         await sendNotif([user2token], title, Body, imgUrl, redirectUrl)
                         pokesLeft = pokesLeft - 1;
-                        const pokesData = await User.findOneAndUpdate({user_id:user_id},pokesLeft);
+                        const pokesData = await User.findOneAndUpdate({_id:user_id},pokesLeft);
                         const like = await Likes.create({user_id, target_id, user1, user2, action })
                         res.status(200).json({
                                 status:"success",
@@ -197,7 +199,7 @@ exports.likeProfile = async (req,res) =>{
         }
 
     } catch (error) {
-        // console.log(error)
+        console.log(error)
         res.status(500).json({
             status:"fail",
             msg:"Internal Server Error"

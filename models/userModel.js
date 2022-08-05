@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema({
     phone:{type:String},
     notifToken:{type:String},
     signinProvider:{type:String},
+    birthDate:{type: Date}, 
     initialMode:{type: String, enum: ["ICE", "IDEA"]},
     verification: {type: Boolean, default: false},
     location : {
