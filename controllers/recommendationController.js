@@ -109,7 +109,7 @@ exports.getRecommendations = async (req,res,next)=>{
 
 exports.likeProfile = async (req,res) =>{
     try {
-        const {user_id, target_id, action } = req.body;
+        const {user_id, target_id, action, user1,user2} = req.body;
         const result = await Likes.findOne({user_id:user_id, target_id:target_id});
         const pokes = await User.findOne({_id:user_id}).select('pokesLeft -_id')
         var pokesLeft = pokes.pokesLeft
