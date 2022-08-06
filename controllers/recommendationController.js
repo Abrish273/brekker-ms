@@ -65,7 +65,7 @@ exports.getRecommendations = async (req,res,next)=>{
             })
         }else {
             const whoLikeYou = await Likes.find({target_id:req.user.user_id, status:0}).distinct('_id')
-            var profilesWhoLikeYou = await Icedata.find({user_id: {$in:whoLikeYou}}).lean()
+            var profilesWhoLikeYou = await Icedata.find({_id: {$in:whoLikeYou}}).lean()
             profilesWhoLikeYou = profilesWhoLikeYou.map(v => ({...v, likesYou: true}))
 
             var maxDistanceInMeters = req.plan.locationLimit || req.query.distance;
@@ -137,7 +137,7 @@ exports.likeProfile = async (req,res) =>{
                     data: {accepted: [`${frndid}`]}
                     };
     
-                    axios
+                   await axios
                     .request(options)
                     .then(function (response) {
                         console.log(response.data);

@@ -36,7 +36,7 @@ exports.registerIdeaProfile = async (req,res,next)=>{
         var user = await IdeaData.findOne({_id: req.body.user_id});
         if(user === null){
             user = await IdeaData.create(req.body);
-            const uid = req.body.user_id + "idea";
+            const uid = req.body._id + "idea";
             //create user for chats
           
             const options = {
@@ -56,7 +56,7 @@ exports.registerIdeaProfile = async (req,res,next)=>{
                 }
                 };
 
-                axios
+                await axios
                 .request(options)
                 .then(function (response) {
                     console.log(response.data);
@@ -110,7 +110,7 @@ exports.updateIdeaProfile = async (req,res,next)=>{
                 }
                 };
 
-                axios
+               await axios
                 .request(options)
                 .then(function (response) {
                     console.log(response.data);
@@ -181,7 +181,7 @@ exports.hideIdeaProfile = async(req, res, next) =>{
                     data: {uidsToDeactivate:  [user_id]}
                 };
                 
-                axios
+               await axios
                     .request(options)
                     .then(function (response) {
                     console.log(response.data);
@@ -197,7 +197,7 @@ exports.hideIdeaProfile = async(req, res, next) =>{
                 data: {uidsToDeactivate:  [user_id]}
             };
             
-            axios
+            await axios
                 .request(options)
                 .then(function (response) {
                 console.log(response.data);
