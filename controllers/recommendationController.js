@@ -24,14 +24,15 @@ exports.getRecommendations = async (req,res,next)=>{
         }
         if(!req.query.lookingFor){
             if(userData.lookingFor==="People to hire" || userData.lookingFor=== "Network"){
-                lookingFor = ["Internship", "Freelance", "Part-time Job", "Full-time Job", "Investors"]
+                lookingFor = ["Internship", "Freelance", "Part-time Job", "Full-time Job", "Investor"]
             }else{
-                lookingFor = ["People to hire", "Network", "Investors"]
+                lookingFor = ["People to hire", "Network", "Investor"]
             }
         }else{
             lookingFor = [req.query.lookingFor];
         }
 
+        console.log(lookingFor)
         const { page = 1, limit = 50 } = req.query;
 
         const seenProfiles = await Likes.find({user_id:req.user.user_id}).distinct('target_id')
@@ -58,10 +59,9 @@ exports.getRecommendations = async (req,res,next)=>{
             //       type: "Point",
             //       coordinates: [long, latt]
             //      },
-            //     //  $spherical : true
-
+            //     //  spherical : true
             //     }
-            //    }}, {lookingFor: {$in: lookingFor}}, {user_id: {$nin: seenProfiles}} ]}).limit(limit * 1).skip((page - 1) * limit)
+            //    }}, {lookingFor: {$in: lookingFor}}, {_id: {$nin: seenProfiles}} ]}).limit(limit * 1).skip((page - 1) * limit)
 
             const recommendedProfiles = await IdeaData.aggregate([{
                 $geoNear: {
