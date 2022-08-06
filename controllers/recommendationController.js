@@ -23,8 +23,8 @@ exports.getRecommendations = async (req,res,next)=>{
             industry = req.query.industry;
         }
         if(!req.query.lookingFor){
-            if(userData.lookingFor==="People to hire" || userData.lookingFor=== "Network"){
-                lookingFor = ["Internship", "Freelance", "Part-time Job", "Full-time Job", "Investor"]
+            if(userData.lookingFor==="People to hire" || userData.lookingFor=== "Network" || userData.lookingFor=== "Investor"){
+                lookingFor = ["Internship", "Freelance", "Part-time Job", "Full-time Job"]
             }else{
                 lookingFor = ["People to hire", "Network", "Investor"]
             }
@@ -52,34 +52,38 @@ exports.getRecommendations = async (req,res,next)=>{
                     msg:"Upgrade to subscription plan for more profiles"
                 })
             }
-            // const recommendedProfiles = await IdeaData.find({$and:[ {  location: {
-            //     $near: {
-            //      $maxDistance: maxDistanceInMeters,
-            //      $geometry: {
-            //       type: "Point",
-            //       coordinates: [long, latt]
-            //      },
-            //     //  spherical : true
-            //     }
-            //    }}, {lookingFor: {$in: lookingFor}}, {_id: {$nin: seenProfiles}} ]}).limit(limit * 1).skip((page - 1) * limit)
-
-            const recommendedProfiles = await IdeaData.aggregate([{
-                $geoNear: {
-                    near: {
-                      type: "Point",
-                      coordinates: [Number(long),Number(latt)]
-                    },
-                    distanceField: "distance",
-                    spherical: true,
-                    maxDistance:  maxDistanceInMeters,
-                  }
-               },{
-                $match:{
-                    $and:[
-                        {lookingFor: {$in: lookingFor}}, {_id: {$nin: seenProfiles}}
-                    ]
+            const recommendedProfiles = await IdeaData.find({$and:[ {  location: {
+                $near: {
+                 $maxDistance: maxDistanceInMeters,
+                 $geometry: {
+                  type: "Point",
+                  coordinates: [long, latt]
+                 },
+                //  spherical : true
                 }
-               }]).limit(limit * 1).skip((page - 1) * limit)
+               }}, {lookingFor: {$in: lookingFor}}, {_id: {$nin: seenProfiles}} ]}).limit(limit * 1).skip((page - 1) * limit)
+
+            // const recommendedProfiles = await IdeaData.aggregate([{
+            //     $geoNear: {
+            //         near: {
+            //           type: "Point",
+            //           coordinates: [Number(long),Number(latt)]
+            //         },
+            //         distanceField: "distance",
+            //         spherical: true,
+            //         maxDistance:  maxDistanceInMeters,
+            //       }
+            //    },{
+            //     $match:{
+            //         $and:[
+            //             {lookingFor: {$in: lookingFor}}, {_id: {$nin: seenProfiles}}
+            //         ]
+            //     }
+            //    },{
+            //     $addFields:{
+            //         age: Number
+            //     }
+            //    }]).limit(limit * 1).skip((page - 1) * limit)
 
                Array.prototype.push.apply(recommendedProfiles,profilesWhoLikeYou); 
 
