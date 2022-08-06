@@ -3,6 +3,7 @@ const opts = { toJSON: { virtuals: true } };
 
 const ideabrekrrDataSchema = new mongoose.Schema({
     _id:{type:String},
+    modeActivated:{type: Boolean, default:false},
     headline:{type: String},
     name:{type: String},
     bio: {type: String},
