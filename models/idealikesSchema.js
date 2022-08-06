@@ -1,8 +1,8 @@
 const mongoose = require('mongoose')
 
 const likesSchema = new mongoose.Schema({
-    user1_id:{type: mongoose.Schema.ObjectId, ref: "IdeaData", required: true},
-    user2_id:{type: mongoose.Schema.ObjectId, ref: "IdeaData", required: true},
+    user_id:{type: mongoose.Schema.ObjectId, ref: "IdeaData", required: true},
+    target_id:{type: mongoose.Schema.ObjectId, ref: "IdeaData", required: true},
     action: {type: String, enum:["like","poke"]},
     user1:{
         username:{type: String},
