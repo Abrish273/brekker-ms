@@ -37,6 +37,10 @@ exports.getRecommendations = async (req,res,next)=>{
         const seenProfiles = await Likes.find({user_id:req.user.user_id}).distinct('target_id')
         seenProfiles.push(req.user.user_id)
 
+        const whoLikeYou = await Likes.find({target_id:req.user.user_id, status:0}).distinct('_id')
+        var profilesWhoLikeYou = await IdeaData.find({_id: {$in:whoLikeYou}}).limit(limit * 1).skip((page - 1) * limit).lean()
+        profilesWhoLikeYou = profilesWhoLikeYou.map(v => ({...v, likesYou: true}))
+
 
         if(req.plan.name ==="trial"){
             //Free plan
@@ -47,26 +51,46 @@ exports.getRecommendations = async (req,res,next)=>{
                     msg:"Upgrade to subscription plan for more profiles"
                 })
             }
-            const profiles = await IdeaData.find({$and:[ {  location: {
-                $near: {
-                 $maxDistance: maxDistanceInMeters,
-                 $geometry: {
-                  type: "Point",
-                  coordinates: [long, latt]
-                 },
-                //  $spherical : true
+            // const recommendedProfiles = await IdeaData.find({$and:[ {  location: {
+            //     $near: {
+            //      $maxDistance: maxDistanceInMeters,
+            //      $geometry: {
+            //       type: "Point",
+            //       coordinates: [long, latt]
+            //      },
+            //     //  $spherical : true
 
+            //     }
+            //    }}, {lookingFor: {$in: lookingFor}}, {user_id: {$nin: seenProfiles}} ]}).limit(limit * 1).skip((page - 1) * limit)
+
+            const recommendedProfiles = await IdeaData.aggregate([{
+                $geoNear: {
+                    near: {
+                      type: "Point",
+                      coordinates: [Number(long),Number(latt)]
+                    },
+                    distanceField: "distance",
+                    spherical: true,
+                    maxDistance:  maxDistanceInMeters,
+                  }
+               },{
+                $match:{
+                    $and:[
+                        {lookingFor: {$in: lookingFor}}, {_id: {$nin: seenProfiles}}
+                    ]
                 }
-               }}, {lookingFor: {$in: lookingFor}}, {user_id: {$nin: seenProfiles}} ]}).limit(limit * 1).skip((page - 1) * limit)
+               }]).limit(limit * 1).skip((page - 1) * limit)
+
+               Array.prototype.push.apply(recommendedProfiles,profilesWhoLikeYou); 
+
             
             res.status(200).json({
                 status:"success",
-                profiles
+                plan:"trial",
+                recommendedProfiles
             })
         }else {
-            const whoLikeYou = await Likes.find({target_id:req.user.user_id, status:0}).distinct('_id')
-            var profilesWhoLikeYou = await Icedata.find({_id: {$in:whoLikeYou}}).lean()
-            profilesWhoLikeYou = profilesWhoLikeYou.map(v => ({...v, likesYou: true}))
+
 
             var maxDistanceInMeters = req.plan.locationLimit || req.query.distance;
             
@@ -77,23 +101,41 @@ exports.getRecommendations = async (req,res,next)=>{
                 })
             }
           
-            const recommendedProfiles = await IceData.find({$and:[ {  location: {
-                $near: {
-                 $maxDistance: maxDistanceInMeters,
-                 $geometry: {
-                  type: "Point",
-                  coordinates: [long, latt]
-                 },
-                //  $spherical : true
+            // const recommendedProfiles = await IdeaData.find({$and:[ {  location: {
+            //     $near: {
+            //      $maxDistance: maxDistanceInMeters,
+            //      $geometry: {
+            //       type: "Point",
+            //       coordinates: [long, latt]
+            //      },
+            //     //  $spherical : true
 
+            //     }
+            //    }},{lookingFor: {$in: lookingFor}},{user_id: {$nin: seenProfiles,}} ]}).limit(limit * 1).skip((page - 1) * limit).lean()
+            const recommendedProfiles = await IdeaData.aggregate([{
+                $geoNear: {
+                    near: {
+                      type: "Point",
+                      coordinates: [Number(long),Number(latt)]
+                    },
+                    distanceField: "distance",
+                    spherical: true,
+                    maxDistance:  maxDistanceInMeters,
+                  }
+               },{
+                $match:{
+                    $and:[
+                        {lookingFor: {$in: lookingFor}}, {_id: {$nin: seenProfiles}}
+                    ]
                 }
-               }},{lookingFor: {$in: lookingFor}},{user_id: {$nin: seenProfiles}} ]}).limit(limit * 1).skip((page - 1) * limit).lean()
+               }]).limit(limit * 1).skip((page - 1) * limit)
             
                Array.prototype.push.apply(recommendedProfiles,profilesWhoLikeYou); 
 
             res.status(200).json({
                 status:"success",
-                profiles
+                plan: req.plan.name,
+                recommendedProfiles
             })
         }
 

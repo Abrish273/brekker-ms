@@ -1,8 +1,8 @@
 const mongoose = require('mongoose')
 
 const ideaBlockModel = new mongoose.Schema({
-    user_id:{type: mongoose.Schema.ObjectId, ref: "IdeaData", required: true},
-    target_id:{type: mongoose.Schema.ObjectId, ref: "IdeaData", required: true},
+    user_id:{type: String, required: true},
+    target_id:{type: String, required: true},
     blockedOn : { type : Date, default: Date.now() },
 }, { timestamps: true })
 

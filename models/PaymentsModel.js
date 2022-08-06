@@ -1,7 +1,7 @@
 var mongoose = require("mongoose");
 var PaymentsSchema = new mongoose.Schema(
   {
-    user_id: { type: mongoose.Schema.ObjectId, ref: "User", required: true },
+    user_id: { type: String, required: true },
     value:{type:String},
     status:{type:String},
     plan:{type: String, enum:["day","week","month"]},

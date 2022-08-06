@@ -6,7 +6,7 @@ const checkForPlan = require("../middleware/paymentsMiddleware")
 
 const router = express.Router();
 
-//User Ice Profile Routes
+//User Idea Profile Routes
 router.get("/profile", getIdeaProfile)
 router.post("/profile", registerIdeaProfile)
 router.put("/profile", updateIdeaProfile)
