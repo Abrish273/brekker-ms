@@ -137,7 +137,7 @@ exports.reportProfile = async(res, req, next) =>{
     try {
         const {target_id} = req.body;
         const user_id = req.user.user_id;
-        const blockedOn = Date.now();
+        const blockedOn = new Date();
 
         const checkBlocked = await IdeaBlocked.findOne({$or:[{user_id:user_id,target_id:target_id},{user_id:target_id,target_id:user_id}]})
         if(checkBlocked !== null){

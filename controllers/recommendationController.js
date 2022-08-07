@@ -52,16 +52,7 @@ exports.getRecommendations = async (req,res,next)=>{
                     msg:"Upgrade to subscription plan for more profiles"
                 })
             }
-            const recommendedProfiles = await IdeaData.find({$and:[ {  location: {
-                $near: {
-                 $maxDistance: maxDistanceInMeters,
-                 $geometry: {
-                  type: "Point",
-                  coordinates: [long, latt]
-                 },
-                //  spherical : true
-                }
-               }}, {lookingFor: {$in: lookingFor}}, {_id: {$nin: seenProfiles}} ]}).limit(limit * 1).skip((page - 1) * limit)
+            const recommendedProfiles = await IdeaData.find({$and:[ {lookingFor: {$in: lookingFor}}, {_id: {$nin: seenProfiles}} ]}).limit(limit * 1).skip((page - 1) * limit)
 
             // const recommendedProfiles = await IdeaData.aggregate([{
             //     $geoNear: {
@@ -78,10 +69,6 @@ exports.getRecommendations = async (req,res,next)=>{
             //         $and:[
             //             {lookingFor: {$in: lookingFor}}, {_id: {$nin: seenProfiles}}
             //         ]
-            //     }
-            //    },{
-            //     $addFields:{
-            //         age: Number
             //     }
             //    }]).limit(limit * 1).skip((page - 1) * limit)
 
@@ -116,23 +103,25 @@ exports.getRecommendations = async (req,res,next)=>{
 
             //     }
             //    }},{lookingFor: {$in: lookingFor}},{user_id: {$nin: seenProfiles,}} ]}).limit(limit * 1).skip((page - 1) * limit).lean()
-            const recommendedProfiles = await IdeaData.aggregate([{
-                $geoNear: {
-                    near: {
-                      type: "Point",
-                      coordinates: [Number(long),Number(latt)]
-                    },
-                    distanceField: "distance",
-                    spherical: true,
-                    maxDistance:  maxDistanceInMeters,
-                  }
-               },{
-                $match:{
-                    $and:[
-                        {lookingFor: {$in: lookingFor}}, {_id: {$nin: seenProfiles}}
-                    ]
-                }
-               }]).limit(limit * 1).skip((page - 1) * limit)
+            // const recommendedProfiles = await IdeaData.aggregate([{
+            //     $geoNear: {
+            //         near: {
+            //           type: "Point",
+            //           coordinates: [Number(long),Number(latt)]
+            //         },
+            //         distanceField: "distance",
+            //         spherical: true,
+            //         maxDistance:  maxDistanceInMeters,
+            //       }
+            //    },{
+            //     $match:{
+            //         $and:[
+            //             {lookingFor: {$in: lookingFor}}, {_id: {$nin: seenProfiles}}
+            //         ]
+            //     }
+            //    }]).limit(limit * 1).skip((page - 1) * limit)
+
+            const recommendedProfiles = await IdeaData.find({$and:[ {lookingFor: {$in: lookingFor}}, {_id: {$nin: seenProfiles}} ]}).limit(limit * 1).skip((page - 1) * limit)
             
                Array.prototype.push.apply(recommendedProfiles,profilesWhoLikeYou); 
 
@@ -171,7 +160,7 @@ exports.likeProfile = async (req,res) =>{
                 const id = result1._id
                 const data = await Likes.findOneAndUpdate({_id: id}, {
                     status:1,
-                    acceptedDate: new Date.now()
+                    acceptedDate: new Date()
                 })
                 const frndid = target_id+"idea";
                 const userdid = user_id+"idea";
@@ -263,7 +252,7 @@ exports.disLikeProfile = async (req,res) =>{
             const id = result1._id
             const data = await Likes.findOneAndUpdate({_id: id}, {
                 status:-1,
-                acceptedDate: new Date.now()
+                acceptedDate: new Date()
             })
             res.status(200).json({
                 status:"success",
@@ -275,7 +264,7 @@ exports.disLikeProfile = async (req,res) =>{
                 const id = result1._id
                 const data = await Likes.findOneAndUpdate({_id: id}, {
                     status:-1,
-                    acceptedDate: new Date.now()
+                    acceptedDate: new Date()
                 })
               
                 res.status(200).json({
