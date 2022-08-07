@@ -182,8 +182,8 @@ exports.likeProfile = async (req,res) =>{
                     });
     
                 // send Notification
-                const user1token = await User.findOne({_id:user_id}).select('notifToken -_id')
-                const user2token = await User.findOne({_id:target_id}).select('notifToken -_id')
+                const user1Token = await User.findOne({_id:user_id}).select('notifToken -_id')
+                const user2Token = await User.findOne({_id:target_id}).select('notifToken -_id')
                 let title= "Its a Connect"
                 let body = "You have matched with a connect"
                 let redirectUrl = "/ideabrekrr/chats"
