@@ -16,26 +16,26 @@ exports.getRecommendations = async (req,res,next)=>{
             long= req.query.long;
         }
 
-        var lookingFor, industry;
+        var lookingFor1, industry;
         if(!req.query.industry){
             industry = userData.industry;
         }else{
             industry = req.query.industry;
         }
         if(!req.query.lookingFor){
-            if(userData.lookingFor==="People to hire" || userData.lookingFor=== "Network" || userData.lookingFor=== "Investor"){
-                lookingFor = ["Internship", "Freelance", "Part-time Job", "Full-time Job"]
+            if(userData.lookingFor==="People to hire" ||  userData.lookingFor=== "Investor"){
+                lookingFor1 = ["Internship", "Freelance", "Part-time Job", "Full-time Job"]
             }else{
-                lookingFor = ["People to hire", "Network", "Investor"]
+                lookingFor1 = ["People to hire", "Network", "Investor"]
             }
         }else{
-            lookingFor = [req.query.lookingFor];
+            lookingFor1 = [req.query.lookingFor];
         }
 
-        console.log(lookingFor)
-        const { page = 1, limit = 50 } = req.query;
+        console.log(lookingFor1)
+        var { page = 1, limit = 50 } = req.query;
 
-        const seenProfiles = await Likes.find({user_id:req.user.user_id}).distinct('target_id')
+        var seenProfiles = await Likes.find({user_id:req.user.user_id}).distinct('target_id')
         seenProfiles.push(req.user.user_id)
 
         const whoLikeYou = await Likes.find({target_id:req.user.user_id, status:0}).distinct('_id')
@@ -52,7 +52,7 @@ exports.getRecommendations = async (req,res,next)=>{
                     msg:"Upgrade to subscription plan for more profiles"
                 })
             }
-            const recommendedProfiles = await IdeaData.find({$and:[ {lookingFor: {$in: lookingFor}}, {_id: {$nin: seenProfiles}} ]}).limit(limit * 1).skip((page - 1) * limit)
+            var recommendedProfiles = await IdeaData.find({$and:[ {lookingFor: {$in: lookingFor1}}, {_id: {$nin: seenProfiles}} ]}).limit(limit * 1).skip((page - 1) * limit)
 
             // const recommendedProfiles = await IdeaData.aggregate([{
             //     $geoNear: {
@@ -121,9 +121,9 @@ exports.getRecommendations = async (req,res,next)=>{
             //     }
             //    }]).limit(limit * 1).skip((page - 1) * limit)
 
-            const recommendedProfiles = await IdeaData.find({$and:[ {lookingFor: {$in: lookingFor}}, {_id: {$nin: seenProfiles}} ]}).limit(limit * 1).skip((page - 1) * limit)
+            var recommendedProfiles = await IdeaData.find({$and:[ {lookingFor: {$in: lookingFor1}}, {_id: {$nin: seenProfiles}} ]}).limit(limit * 1).skip((page - 1) * limit)
             
-               Array.prototype.push.apply(recommendedProfiles,profilesWhoLikeYou); 
+            Array.prototype.push.apply(recommendedProfiles,profilesWhoLikeYou); 
 
             res.status(200).json({
                 status:"success",
