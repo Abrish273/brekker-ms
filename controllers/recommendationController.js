@@ -22,25 +22,52 @@ exports.getRecommendations = async (req,res,next)=>{
         }else{
             industry = req.query.industry;
         }
+
+        // Network
+        // Investor
+        // Founder / Co-founder
+        // Ad’s & Marketing
+        // App and Web Developer
+        // Get Hired /Freelance 
+        // Collaboration
+        // Mentor/Mentee
+        // Project Manager
+        // UI/UX Designer
+        // if(!req.query.lookingFor){
+        //     if(userData.lookingFor==="People to hire" ||  userData.lookingFor=== "Investor"){
+        //         lookingFor1 = ["Internship", "Freelance", "Part-time Job", "Full-time Job"]
+        //     }else{
+        //         lookingFor1 = ["People to hire", "Network", "Investor"]
+        //     }
+        // }else{
+        //     lookingFor1 = [req.query.lookingFor];
+        // }
+        var searchingFor;
         if(!req.query.lookingFor){
-            if(userData.lookingFor==="People to hire" ||  userData.lookingFor=== "Investor"){
-                lookingFor1 = ["Internship", "Freelance", "Part-time Job", "Full-time Job"]
-            }else{
-                lookingFor1 = ["People to hire", "Network", "Investor"]
-            }
+            searchingFor = userData.lookingFor;
         }else{
-            lookingFor1 = [req.query.lookingFor];
+            searchingFor = req.query.lookingFor
         }
 
-        console.log(lookingFor1)
+        if(searchingFor === "Investor"){
+            lookingFor1 = ["Founder / Co-founder", "Ad’s & Marketing", "Project Manager"]
+        } else {
+            lookingFor1 = ["Founder / Co-founder", "Ad’s & Marketing", "Investor", "Network", "App and Web Developer", "Get Hired /Freelance", "Collaboration","Mentor/Mentee","Project Manager","UI/UX Designer"]
+        }
+
+
+        // console.log(lookingFor1)
         var { page = 1, limit = 50 } = req.query;
 
         var seenProfiles = await Likes.find({user_id:req.user.user_id}).distinct('target_id')
         seenProfiles.push(req.user.user_id)
 
         const whoLikeYou = await Likes.find({target_id:req.user.user_id, status:0}).distinct('_id')
-        var profilesWhoLikeYou = await IdeaData.find({_id: {$in:whoLikeYou}}).limit(limit * 1).skip((page - 1) * limit).lean()
-        profilesWhoLikeYou = profilesWhoLikeYou.map(v => ({...v, likesYou: true}))
+        var profilesWhoLikeYou = await IdeaData.find({_id: {$in:whoLikeYou}}).limit(limit * 1).skip((page - 1) * limit).lean();
+
+        profilesWhoLikeYou.forEach(function (element) {
+            element.likesYou = true;
+        });
 
 
         if(req.plan.name ==="trial"){
