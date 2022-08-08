@@ -12,7 +12,7 @@ const ideabrekrrDataSchema = new mongoose.Schema({
     showGender:{type: Boolean, default: true},
     birthDate:{type: Date},
     lookingFor:{type: String}, // enum:["Investor", "Network","Mentee/Mentor","Internship", "Freelance", "Part-time Job", "Full-time Job", "People to hire"]
-    role:{type: String},
+    myrole:{type: String},
     industry:{type: String},
     experience:{type: String},
     educationLevel:{type: String}, //enum:["HighSchool", "In College", "Undergraduate school", "In grad school", ]

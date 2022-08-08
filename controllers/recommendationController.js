@@ -23,25 +23,33 @@ exports.getRecommendations = async (req,res,next)=>{
             industry = req.query.industry;
         }
 
-        // Network
-        // Investor
-        // Founder / Co-founder
-        // Ad’s & Marketing
-        // App and Web Developer
-        // Get Hired /Freelance 
-        // Collaboration
-        // Mentor/Mentee
-        // Project Manager
-        // UI/UX Designer
-        // if(!req.query.lookingFor){
-        //     if(userData.lookingFor==="People to hire" ||  userData.lookingFor=== "Investor"){
-        //         lookingFor1 = ["Internship", "Freelance", "Part-time Job", "Full-time Job"]
-        //     }else{
-        //         lookingFor1 = ["People to hire", "Network", "Investor"]
-        //     }
-        // }else{
-        //     lookingFor1 = [req.query.lookingFor];
-        // }
+        // lookingFor:
+        // 'Network', 
+        // 'Investor', 
+        // 'Founder/Co-founder', 
+        // "Ad's & Marketing", 
+        // 'App/Web Developer',
+        // 'Freelancers', 
+        // 'Collaboration', 
+        // 'Mentor/Mentee', 
+        // 'Project Manager',
+        // 'UI/UX Designer',
+        // 'Entrepreneur',
+        // 'Work'
+//         Roles:
+// 'Entrepreneur',
+// 'Investor',
+// 'Founder/Co-founder',
+// 'Ad's & Marketing',
+// 'App/Web Developer',
+// 'Freelancer',
+// 'Mentor',
+// 'Project Manager',
+// 'UI/UX Designer',
+// 'Graphic Designer',
+// 'Researcher',
+// 'Others'
+
         var searchingFor;
         if(!req.query.lookingFor){
             searchingFor = userData.lookingFor;
@@ -49,10 +57,14 @@ exports.getRecommendations = async (req,res,next)=>{
             searchingFor = req.query.lookingFor
         }
 
-        if(searchingFor === "Investor"){
-            lookingFor1 = ["Founder / Co-founder", "Ad’s & Marketing", "Project Manager"]
+
+        //Finish this
+        if(searchingFor === "App/Web Developer" || searchingFor === "Freelancer" || searchingFor === "Project Manager" || searchingFor === "UI/UX Designer"|| searchingFor === "Graphic Designer"  ){
+            lookingFor1 = ["App/Web Developer", "Freelancer", "Project Manager", "Mentor", "UI/UX Designer","Graphic Designer", "Ad's & Marketing" ]
+        } else if(searchingFor === "Investor" ||searchingFor === "Founder/Co-founder" ||searchingFor === "Entrepreneur" || searchingFor ==="work" ){
+            lookingFor1= ["Investor", "Entrepreneur", "Founder/Co-founder"]
         } else {
-            lookingFor1 = ["Founder / Co-founder", "Ad’s & Marketing", "Investor", "Network", "App and Web Developer", "Get Hired /Freelance", "Collaboration","Mentor/Mentee","Project Manager","UI/UX Designer"]
+            lookingFor1 = ["App/Web Developer", "Freelancer", "Project Manager", "Mentor", "UI/UX Designer","Graphic Designer", "Ad's & Marketing", "Investor", "Entrepreneur", "Founder/Co-founder"]
         }
 
 
@@ -79,7 +91,7 @@ exports.getRecommendations = async (req,res,next)=>{
                     msg:"Upgrade to subscription plan for more profiles"
                 })
             }
-            var recommendedProfiles = await IdeaData.find({$and:[ {lookingFor: {$in: lookingFor1}}, {_id: {$nin: seenProfiles}} ]}).limit(limit * 1).skip((page - 1) * limit)
+            var recommendedProfiles = await IdeaData.find({$and:[ {myrole: {$in: lookingFor1}}, {_id: {$nin: seenProfiles}} ]}).limit(limit * 1).skip((page - 1) * limit)
 
             // const recommendedProfiles = await IdeaData.aggregate([{
             //     $geoNear: {
@@ -148,7 +160,7 @@ exports.getRecommendations = async (req,res,next)=>{
             //     }
             //    }]).limit(limit * 1).skip((page - 1) * limit)
 
-            var recommendedProfiles = await IdeaData.find({$and:[ {lookingFor: {$in: lookingFor1}}, {_id: {$nin: seenProfiles}} ]}).limit(limit * 1).skip((page - 1) * limit)
+            var recommendedProfiles = await IdeaData.find({$and:[ {myrole: {$in: lookingFor1}}, {_id: {$nin: seenProfiles}} ]}).limit(limit * 1).skip((page - 1) * limit)
             
             Array.prototype.push.apply(recommendedProfiles,profilesWhoLikeYou); 
 
@@ -234,7 +246,7 @@ exports.likeProfile = async (req,res) =>{
                         const body=`Hey ${user2.name}, ${user1.name} is interested to talk with you.`
                         const imgUrl =""
                         const redirectUrl ="/ideabrekrr/profile/:id"
-                        await sendNotif([user2token], title, Body, imgUrl, redirectUrl)
+                        await sendNotif([user2token], title, body, imgUrl, redirectUrl)
                         pokesLeft = pokesLeft - 1;
                         const pokesData = await User.findOneAndUpdate({_id:user_id},pokesLeft);
                         const like = await Likes.create({user_id, target_id, user1, user2, action })
