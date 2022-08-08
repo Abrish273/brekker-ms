@@ -252,7 +252,6 @@ exports.likeProfile = async (req,res) =>{
                     pokesLeft
                 })
             }else {
-                const like = await Likes.create({user_id, target_id, user1, user2, action })
                 // if action === poke, send notification. 
                 // create room for chat
                 if(action==="poke"){
