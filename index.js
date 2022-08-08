@@ -34,14 +34,5 @@ app.use(middleware.decodeToken);
 
 app.use("/ideabrekrr", ideaRouter)
 
-// custom 404
-app.use((req, res, next) => {
-  res.status(404).send("Route Not Found")
-})
 
-// custom error handler
-app.use((err, req, res, next) => {
-  console.error(err.stack)
-  res.status(500).send('Error in the Server, Something broke!')
-})
 module.exports = app;
