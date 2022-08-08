@@ -301,11 +301,11 @@ exports.likeProfile = async (req,res) =>{
 
 exports.disLikeProfile = async (req,res) =>{
   try {
-        const {user_id, target_id } = req.body;
+        const {user_id, target_id} = req.body;
         const result = await Likes.findOne({user_id:user_id, target_id:target_id});
-        // console.log(result)
+        console.log(result)
         if(result && result.length!==0){
-            const id = result1._id
+            const id = result._id
             const data = await Likes.findOneAndUpdate({_id: id}, {
                 status:-1,
                 acceptedDate: new Date()
@@ -316,6 +316,7 @@ exports.disLikeProfile = async (req,res) =>{
             })
         }else{
             const result1 = await Likes.findOne({user_id:target_id, target_id:user_id});
+            console.log(result1)
             if(result1 && result1!==0){
                 const id = result1._id
                 const data = await Likes.findOneAndUpdate({_id: id}, {
@@ -327,11 +328,18 @@ exports.disLikeProfile = async (req,res) =>{
                     status:"success",
                     msg:"Profile Disliked",
                 })
+            }else{
+                let status = -1
+                const dislike = await Likes.create({user_id,target_id,status})
+                res.status(200).json({
+                    status:"success",
+                    msg:"Profile Disliked",
+                })
             }
         }
     } catch (error) {
         // console.log(error)
-        res.status(400).json({
+        res.status(500).json({
             status:"fail",
             msg:"Internal Server Error"
 
