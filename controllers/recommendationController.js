@@ -93,7 +93,7 @@ exports.getRecommendations = async (req,res,next)=>{
                     msg:"Upgrade to subscription plan for more profiles"
                 })
             }
-            var recommendedProfiles = await IdeaData.find({$and:[{myrole: {$in: lookingFor1}}, {_id: {$nin: seenProfiles}} ]}).limit(limit * 1).skip((page - 1) * limit)
+            var recommendedProfiles = await IdeaData.find({$and:[{myrole: {$in: lookingFor1}}, {_id: {$nin: seenProfiles}}, {industry: industry} ]}).limit(limit * 1).skip((page - 1) * limit)
 
             // const recommendedProfiles = await IdeaData.aggregate([{
             //     $geoNear: {
@@ -112,6 +112,11 @@ exports.getRecommendations = async (req,res,next)=>{
             //         ]
             //     }
             //    }]).limit(limit * 1).skip((page - 1) * limit)
+            
+            if(recommendedProfiles.length < 1){
+                   
+                recommendedProfiles = await IdeaData.find({$and:[{_id: {$nin: seenProfiles}} ]}).limit(limit * 1).skip((page - 1) * limit)
+             }
 
                Array.prototype.push.apply(recommendedProfiles,profilesWhoLikeYou); 
 
@@ -162,8 +167,13 @@ exports.getRecommendations = async (req,res,next)=>{
             //     }
             //    }]).limit(limit * 1).skip((page - 1) * limit)
 
-            var recommendedProfiles = await IdeaData.find({$and:[ {industry: industry},{myrole: {$in: lookingFor1}}, {_id: {$nin: seenProfiles}} ]}).limit(limit * 1).skip((page - 1) * limit)
-            
+            var recommendedProfiles = await IdeaData.find({$and:[{myrole: {$in: lookingFor1}}, {_id: {$nin: seenProfiles}}, {industry: industry} ]}).limit(limit * 1).skip((page - 1) * limit)
+            if(recommendedProfiles.length < 1){
+                   
+                recommendedProfiles = await IdeaData.find({$and:[{_id: {$nin: seenProfiles}} ]}).limit(limit * 1).skip((page - 1) * limit)
+             }
+
+
             Array.prototype.push.apply(recommendedProfiles,profilesWhoLikeYou); 
 
             res.status(200).json({
