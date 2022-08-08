@@ -3,7 +3,6 @@ const compression = require('compression');
 const mongoose = require('mongoose')
 const cors = require('cors')
 const dotenv = require("dotenv")
-const helmet = require('helmet')
 const middleware = require('./middleware/index');
 
 const ideaRouter = require("./routes/ideaRoutes")
@@ -26,7 +25,6 @@ app.enable("trust proxy");
 app.use(cors({}))
 app.use(express.json())
 app.disable('x-powered-by')
-app.use(helmet())
 // Compress all HTTP responses
 app.use(compression());
 //Middleware
