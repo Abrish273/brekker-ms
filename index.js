@@ -1,5 +1,4 @@
 const express = require('express')
-const compression = require('compression');
 const mongoose = require('mongoose')
 const cors = require('cors')
 const dotenv = require("dotenv")
@@ -24,9 +23,6 @@ connectWithRetry()
 app.enable("trust proxy");
 app.use(cors({}))
 app.use(express.json())
-app.disable('x-powered-by')
-// Compress all HTTP responses
-app.use(compression());
 //Middleware
 app.use(middleware.decodeToken);
 
