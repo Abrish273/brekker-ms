@@ -35,6 +35,8 @@ exports.registerIdeaProfile = async (req,res,next)=>{
     try {
         var user = await IdeaData.findOne({_id: req.body.user_id});
         if(user === null){
+            req.body._id = req.body.user_id;
+            delete req.body.user_id
             user = await IdeaData.create(req.body);
             const uid = req.body._id + "idea";
             //create user for chats

@@ -11,6 +11,7 @@ exports.getRecommendations = async (req,res,next)=>{
         if(!req.query.latt && !req.query.long){
             latt = userData.location.coordinates[1];
             long = userData.location.coordinates[0]; 
+
         }else{
             latt = req.query.latt;
             long= req.query.long;
@@ -92,7 +93,7 @@ exports.getRecommendations = async (req,res,next)=>{
                     msg:"Upgrade to subscription plan for more profiles"
                 })
             }
-            var recommendedProfiles = await IdeaData.find({$and:[ {industry: industry},{myrole: {$in: lookingFor1}}, {_id: {$nin: seenProfiles}} ]}).limit(limit * 1).skip((page - 1) * limit)
+            var recommendedProfiles = await IdeaData.find({$and:[{myrole: {$in: lookingFor1}}, {_id: {$nin: seenProfiles}} ]}).limit(limit * 1).skip((page - 1) * limit)
 
             // const recommendedProfiles = await IdeaData.aggregate([{
             //     $geoNear: {
