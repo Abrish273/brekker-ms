@@ -16,11 +16,18 @@ exports.getRecommendations = async (req,res,next)=>{
             long= req.query.long;
         }
 
-        var lookingFor1, industry;
+        var lookingFor1, industry, searchingFor;
         if(!req.query.industry){
             industry = userData.industry;
         }else{
             industry = req.query.industry;
+        }
+
+        
+        if(!req.query.lookingFor){
+            searchingFor = userData.lookingFor;
+        }else{
+            searchingFor = req.query.lookingFor
         }
 
         // lookingFor:
@@ -50,12 +57,6 @@ exports.getRecommendations = async (req,res,next)=>{
 // 'Researcher',
 // 'Others'
 
-        var searchingFor;
-        if(!req.query.lookingFor){
-            searchingFor = userData.lookingFor;
-        }else{
-            searchingFor = req.query.lookingFor
-        }
 
 
         //Finish this
@@ -91,7 +92,7 @@ exports.getRecommendations = async (req,res,next)=>{
                     msg:"Upgrade to subscription plan for more profiles"
                 })
             }
-            var recommendedProfiles = await IdeaData.find({$and:[ {myrole: {$in: lookingFor1}}, {_id: {$nin: seenProfiles}} ]}).limit(limit * 1).skip((page - 1) * limit)
+            var recommendedProfiles = await IdeaData.find({$and:[ {industry: industry},{myrole: {$in: lookingFor1}}, {_id: {$nin: seenProfiles}} ]}).limit(limit * 1).skip((page - 1) * limit)
 
             // const recommendedProfiles = await IdeaData.aggregate([{
             //     $geoNear: {
@@ -160,7 +161,7 @@ exports.getRecommendations = async (req,res,next)=>{
             //     }
             //    }]).limit(limit * 1).skip((page - 1) * limit)
 
-            var recommendedProfiles = await IdeaData.find({$and:[ {myrole: {$in: lookingFor1}}, {_id: {$nin: seenProfiles}} ]}).limit(limit * 1).skip((page - 1) * limit)
+            var recommendedProfiles = await IdeaData.find({$and:[ {industry: industry},{myrole: {$in: lookingFor1}}, {_id: {$nin: seenProfiles}} ]}).limit(limit * 1).skip((page - 1) * limit)
             
             Array.prototype.push.apply(recommendedProfiles,profilesWhoLikeYou); 
 
