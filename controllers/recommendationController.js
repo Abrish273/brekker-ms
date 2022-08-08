@@ -131,7 +131,7 @@ exports.getRecommendations = async (req,res,next)=>{
 
             var maxDistanceInMeters = req.plan.locationLimit || req.query.distance;
             
-            if(rep.query.distance > req.plan.locationLimit){
+            if(req.query.distance > req.plan.locationLimit){
                 res.status(200).json({
                     status:"upgrade",
                     msg:"Distance exceeds plan limit",
@@ -179,7 +179,8 @@ exports.getRecommendations = async (req,res,next)=>{
             res.status(200).json({
                 status:"success",
                 plan: req.plan.name,
-                recommendedProfiles
+                count: recommendedProfiles.length,
+                recommendedProfiles 
             })
         }
 

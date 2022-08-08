@@ -7,10 +7,11 @@ const checkForPlan = async (req,res,next) =>{
         return res.status(401).json({status:'fail', message:'unauthorized'})
     }
     req.plan ={}
-    const userPlan = await User.findOne({_id:user_id}).select('subscriptionPlan');
-    if(userPlan && userPlan !== 0 ){
+    const userPlan = req.query.subscriptionPlan;
+
+    if(userPlan){
         // console.log(userPlan.subscriptionPlan)
-        req.plan.name = userPlan.subscriptionPlan;
+        req.plan.name = userPlan;
         if(req.plan.name === "day"){
             req.plan.locationLimit = 10000;
         }else if(req.plan.name === "week"){

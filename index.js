@@ -1,4 +1,5 @@
 const express = require('express')
+const compression = require('compression');
 const mongoose = require('mongoose')
 const cors = require('cors')
 const dotenv = require("dotenv")
@@ -8,10 +9,9 @@ const ideaRouter = require("./routes/ideaRoutes")
 
 const app = express()
 dotenv.config()
-
 const mongoURL = process.env.MONGO_URL
 const connectWithRetry = () =>{
-mongoose
+    mongoose
     .connect(mongoURL)
     .then(()=> console.log("Successfully connected to DB"))
     .catch((e)=> {
@@ -24,6 +24,8 @@ connectWithRetry()
 app.enable("trust proxy");
 app.use(cors({}))
 app.use(express.json())
+// Compress all HTTP responses
+app.use(compression());
 //Middleware
 app.use(middleware.decodeToken);
 
