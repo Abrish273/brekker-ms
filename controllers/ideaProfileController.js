@@ -166,11 +166,8 @@ exports.hideIdeaProfile = async(req, res, next) =>{
     try {
         const modeActivated = req.query.modeActivated;
         const user_id = req.user.user_id+"idea"
-
-        const user = await IdeaData.findOneAndUpdate({_id:req.user.user_id}, modeActivated ,{
-            new:true,
-            runValidators:true
-        });
+        console.log(modeActivated)
+        const user = await IdeaData.findOneAndUpdate({_id:req.user.user_id}, {modeActivated:modeActivated});
         //finish this
         if(modeActivated === false){
                         
@@ -208,8 +205,6 @@ exports.hideIdeaProfile = async(req, res, next) =>{
         }
 
 
-
-        
         res.status(200).json({
             status:"success",
             user

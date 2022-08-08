@@ -185,8 +185,8 @@ exports.likeProfile = async (req,res) =>{
     try {
         const {user_id, target_id, action, user1,user2} = req.body;
         const result = await Likes.findOne({user_id:user_id, target_id:target_id});
-        const pokes = await User.findOne({_id:user_id}).select('pokesLeft -_id')
-        var pokesLeft = pokes.pokesLeft
+        const pokes = await User.findOne({_id:req.user.user_id}).select('pokesLeft -_id')
+        var pokesLeft = Number(pokes.pokesLeft)
         // console.log(result)
         if(result && result.length!==0){
             res.status(200).json({
@@ -228,10 +228,15 @@ exports.likeProfile = async (req,res) =>{
                 let redirectUrl = "/ideabrekrr/chats"
                 await sendNotif([user1Token, user2Token],title,body, redirectUrl)
 
+                if(action === "poke"){
+                    pokesLeft= pokesLeft-1;
+                }
+
                 
                 res.status(200).json({
                     status:"success",
                     msg:"Its a Match",
+                    pokesLeft
                 })
             }else {
                 const like = await Likes.create({user_id, target_id, user1, user2, action })
@@ -248,7 +253,7 @@ exports.likeProfile = async (req,res) =>{
                         const redirectUrl ="/ideabrekrr/profile/:id"
                         await sendNotif([user2token], title, body, imgUrl, redirectUrl)
                         pokesLeft = pokesLeft - 1;
-                        const pokesData = await User.findOneAndUpdate({_id:user_id},pokesLeft);
+                        const pokesData = await User.findOneAndUpdate({_id:user_id},{pokesLeft: pokesLeft});
                         const like = await Likes.create({user_id, target_id, user1, user2, action })
                         res.status(200).json({
                                 status:"success",
