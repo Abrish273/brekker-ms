@@ -1,0 +1,29 @@
+version: 0.2
+
+phases:
+    install:
+        on-failure: ABORT
+        commands:
+            - echo "Installing Dependencies..." 
+            - npm i
+    pre_build:
+        commands:
+            - echo "Auditing and fixing vulnerabilities..."
+            - npm audit fix
+    build:
+        commands:
+            - echo "Zipping deployment package..."
+            - zip -r artifact.zip *
+    post_build:
+        commands:
+            - echo "Updating Lambda Function..."
+            - aws lambda update-function-code --function-name $lambda_name --zip-file fileb://artifact.zip
+
+artifacts:
+    files:
+        - '**/*'
+    name: $(date +%Y-%m-%d)-$CODEBUILD_RESOLVED_SOURCE_VERSION
+        
+cache:
+    paths:
+        - node_modules/**/*
