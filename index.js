@@ -8,17 +8,17 @@ const ideaRouter = require("./routes/ideaRoutes")
 
 const app = express()
 dotenv.config()
-const mongoURL = process.env.MONGO_URL
-const connectWithRetry = () =>{
-    mongoose
-    .connect(mongoURL)
-    .then(()=> console.log("Successfully connected to DB"))
-    .catch((e)=> {
-        console.log(e)
-        setTimeout(connectWithRetry, 5000)
-    })
-}
-connectWithRetry()
+// const mongoURL = process.env.MONGO_URL
+// const connectWithRetry = () =>{
+//     mongoose
+//     .connect(mongoURL)
+//     .then(()=> console.log("Successfully connected to DB"))
+//     .catch((e)=> {
+//         console.log(e)
+//         setTimeout(connectWithRetry, 5000)
+//     })
+// }
+// connectWithRetry()
 
 app.enable("trust proxy");
 app.use(cors({}))
