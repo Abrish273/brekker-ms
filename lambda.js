@@ -18,12 +18,12 @@ const connectWithRetry = () =>{
 mongoose
     .connect(mongoURL)
     .then(()=> {
-        server_status = 'online'
+        // server_status = 'online'
         
         console.log("Successfully connected to DB")})
     .catch((e)=> {
         console.log(e)
-        server_status = 'offline'
+        // server_status = 'offline'
         setTimeout(connectWithRetry, 5000)
     })
 }
