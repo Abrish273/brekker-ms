@@ -2,7 +2,7 @@
 const awsServerlessExpress = require('aws-serverless-express')
 const mongoose = require('mongoose')
 const app = require('./index')
-const config = require('./config/config.js')
+// const config = require('./config/config.js')
 const server = awsServerlessExpress.createServer(app)
 
 // DB Connection
