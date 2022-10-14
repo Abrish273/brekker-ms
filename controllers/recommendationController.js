@@ -62,11 +62,11 @@ exports.getRecommendations = async (req,res,next)=>{
 
         //Finish this
         if(searchingFor === "App/Web Developer" || searchingFor === "Freelancer" || searchingFor === "Project Manager" || searchingFor === "UI/UX Designer"|| searchingFor === "Graphic Designer"  ){
-            lookingFor1 = ["App/Web Developer", "Freelancer", "Project Manager", "Mentor", "UI/UX Designer","Graphic Designer", "Ad's & Marketing" ]
-        } else if(searchingFor === "Investor" ||searchingFor === "Founder/Co-founder" ||searchingFor === "Entrepreneur" || searchingFor ==="work" ){
+            lookingFor1 = ["App/Web Developer", "Freelancer", "Project Manager", "Mentor/Mentee", "UI/UX Designer","Graphic Designer", "Ad's & Marketing" ]
+        } else if(searchingFor === "Investor" ||searchingFor === "Founder/Co-founder" ||searchingFor === "Entrepreneur" || searchingFor ==="Work/Get hired" ){
             lookingFor1= ["Investor", "Entrepreneur", "Founder/Co-founder"]
         } else {
-            lookingFor1 = ["App/Web Developer", "Freelancer", "Project Manager", "Mentor", "UI/UX Designer","Graphic Designer", "Ad's & Marketing", "Investor", "Entrepreneur", "Founder/Co-founder"]
+            lookingFor1 = ["App/Web Developer", "Freelancer", "Project Manager", "Mentor/Mentee", "UI/UX Designer","Graphic Designer", "Ad's & Marketing", "Investor", "Entrepreneur", "Founder/Co-founder"]
         }
 
 
@@ -86,8 +86,8 @@ exports.getRecommendations = async (req,res,next)=>{
 
         if(req.plan.name ==="trial"){
             //Free plan
-            const maxDistanceInMeters = 5000;
-            if(page > 2 || req.query.distance > 5000){
+            const maxDistanceInMeters = 15000;
+            if(page > 2 || req.query.distance > 15000){
                 res.status(200).json({
                     status:"upgrade",
                     msg:"Upgrade to subscription plan for more profiles"
@@ -95,7 +95,7 @@ exports.getRecommendations = async (req,res,next)=>{
             }
             var recommendedProfiles = await IdeaData.find({$and:[{myrole: {$in: lookingFor1}}, {_id: {$nin: seenProfiles}}, {industry: industry} ]}).limit(limit * 1).skip((page - 1) * limit)
 
-            // const recommendedProfiles = await IdeaData.aggregate([{
+            // const recommendedProfiles = await IdeaData.aggregate([{  
             //     $geoNear: {
             //         near: {
             //           type: "Point",
@@ -376,6 +376,56 @@ exports.matchedProfiles = async (req,res) =>{
             whoLikesMe
         })
     } catch (error) {
+        res.status(500).json({
+            status:"fail",
+            msg:"Internal Server Error"
+
+        })
+    }
+}
+
+exports.AroundMe = async (req,res) =>{
+    try {
+        const userData = await IdeaData.findOne({_id:req.user.user_id}).select('lookingFor industry education activeStatus location languages');
+
+        var latt, long; 
+        
+        latt = userData.location.coordinates[1];
+        long = userData.location.coordinates[0]; 
+        const maxDistanceInMeters = 15000;
+
+        var seenProfiles = await Likes.find({user_id:req.user.user_id}).distinct('target_id')
+        seenProfiles.push(req.user.user_id)
+
+       
+        var profilesNearMe1 = await IdeaData.aggregate([{
+            $geoNear: {
+                near: {
+                  type: "Point",
+                  coordinates: [Number(long),Number(latt)]
+                },
+                maxDistance:  maxDistanceInMeters,
+                distanceField: "distance",
+                spherical: true,
+                // distanceMultiplier: 0.001   
+              }
+           },{
+            $count: "nearMe"
+            }])
+
+            let profilesNearMe = (profilesNearMe1[0]) ? profilesNearMe1[0].nearMe : 0 ;
+
+            res.status(200).json({
+             status:"success",
+             profilesNearMe,
+ 
+         })
+ 
+
+
+
+    } catch (error) {
+        console.log(error)
         res.status(500).json({
             status:"fail",
             msg:"Internal Server Error"

@@ -1,7 +1,7 @@
 const express = require('express')
 
 const { getIdeaProfile, updateIdeaProfile, registerIdeaProfile, reportProfile, hideIdeaProfile} = require('../controllers/ideaProfileController');
-const { getRecommendations,likeProfile,disLikeProfile,likedProfiles,matchedProfiles} = require('../controllers/recommendationController');
+const { getRecommendations,likeProfile,disLikeProfile,likedProfiles,matchedProfiles, AroundMe} = require('../controllers/recommendationController');
 const checkForPlan = require("../middleware/paymentsMiddleware")
 
 const router = express.Router();
@@ -18,6 +18,7 @@ router.post("/profile/dislike", disLikeProfile)
 router.post("/liked-profiles", likedProfiles)
 router.post("/matches", matchedProfiles)
 router.post("/report", reportProfile)
+router.get("/aroundme", AroundMe)
 
 
 module.exports = router;
