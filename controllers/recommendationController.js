@@ -219,7 +219,7 @@ exports.likeProfile = async (req,res) =>{
                 // Create a room for chat
                 const options = {
                     method: 'POST',
-                    url: `https://214977e994c46638.api-us.cometchat.io/v3/users/${userdid}/friends`,
+                    url: `https://${process.env.cometchat_app_id}.api-us.cometchat.io/v3/users/${userdid}/friends`,
                     headers: {apiKey: process.env.cometchat_api_key, 'Content-Type': 'application/json', Accept: 'application/json'},
                     data: {accepted: [`${frndid}`]}
                     };

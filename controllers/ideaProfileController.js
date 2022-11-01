@@ -43,7 +43,7 @@ exports.registerIdeaProfile = async (req,res,next)=>{
           
             const options = {
                 method: 'POST',
-                url: 'https://214977e994c46638.api-us.cometchat.io/v3/users',
+                url: `https://${process.env.cometchat_app_id}.api-us.cometchat.io/v3/users`,
                 headers: {
                     apiKey: process.env.cometchat_api_key,
                     'Content-Type': 'application/json',
@@ -100,7 +100,7 @@ exports.updateIdeaProfile = async (req,res,next)=>{
         if(req.body.name && req.body.images &&  req.body.images[0].image_URL){
             const options = {
                 method: 'PUT',
-                url: `https://214977e994c46638.api-us.cometchat.io/v3/users/${uid}`,
+                url: `https://${process.env.cometchat_app_id}.api-us.cometchat.io/v3/users/${uid}`,
                 headers: {
                     apiKey: process.env.cometchat_api_key,
                     'Content-Type': 'application/json',
@@ -175,7 +175,7 @@ exports.hideIdeaProfile = async(req, res, next) =>{
                         
                 const options = {
                     method: 'DELETE',
-                    url: 'https://214977e994c46638.api-us.cometchat.io/v3/users',
+                    url: `https://${process.env.cometchat_app_id}.api-us.cometchat.io/v3/users`,
                     headers: {apiKey: process.env.cometchat_api_key, 'Content-Type': 'application/json', Accept: 'application/json'},
                     data: {uidsToDeactivate:  [user_id]}
                 };
@@ -191,7 +191,7 @@ exports.hideIdeaProfile = async(req, res, next) =>{
         }else{
             const options = {
                 method: 'DELETE',
-                url: 'https://214977e994c46638.api-us.cometchat.io/v3/users',
+                url: `https://${process.env.cometchat_app_id}.api-us.cometchat.io/v3/users`,
                 headers: {apiKey: process.env.cometchat_api_key, 'Content-Type': 'application/json', Accept: 'application/json'},
                 data: {uidsToDeactivate:  [user_id]}
             };
