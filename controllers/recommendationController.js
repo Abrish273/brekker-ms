@@ -35,7 +35,7 @@ exports.getRecommendations = async (req,res,next)=>{
         // 'Network', 
         // 'Investor', 
         // 'Founder/Co-founder', 
-        // "Ad's & Marketing", 
+        // "Ads and Marketing", 
         // 'App/Web Developer',
         // 'Freelancers', 
         // 'Collaboration', 
@@ -116,7 +116,22 @@ exports.getRecommendations = async (req,res,next)=>{
             if(recommendedProfiles.length < 1){
                    
                 recommendedProfiles = await IdeaData.find({$and:[{_id: {$nin: seenProfiles}} ]}).limit(limit * 1).skip((page - 1) * limit)
-             }
+                if(recommendedProfiles.length < 2){            
+                   
+                     recommendedProfiles = await IdeaData.aggregate([{
+                        $geoNear: {
+                            near: {
+                              type: "Point",
+                              coordinates: [Number(long),Number(latt)]
+                            },
+                            maxDistance:  maxDistanceInMeters,
+                            distanceField: "distance",
+                            spherical: true,
+                            // distanceMultiplier: 0.001   
+                          }
+                       }])
+                }
+            }
 
                Array.prototype.push.apply(recommendedProfiles,profilesWhoLikeYou); 
 
@@ -171,7 +186,22 @@ exports.getRecommendations = async (req,res,next)=>{
             if(recommendedProfiles.length < 1){
                    
                 recommendedProfiles = await IdeaData.find({$and:[{_id: {$nin: seenProfiles}} ]}).limit(limit * 1).skip((page - 1) * limit)
-             }
+                if(recommendedProfiles.length < 2){            
+                   
+                    recommendedProfiles = await IdeaData.aggregate([{
+                       $geoNear: {
+                           near: {
+                             type: "Point",
+                             coordinates: [Number(long),Number(latt)]
+                           },
+                           maxDistance:  maxDistanceInMeters,
+                           distanceField: "distance",
+                           spherical: true,
+                           // distanceMultiplier: 0.001   
+                         }
+                      }])
+               }
+            }
 
 
             Array.prototype.push.apply(recommendedProfiles,profilesWhoLikeYou); 
