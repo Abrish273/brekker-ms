@@ -276,12 +276,12 @@ exports.likeProfile = async (req,res) =>{
                     });
     
                 // send Notification
-                const user1Token = await User.findOne({_id:user_id}).select('notifToken -_id')
-                const user2Token = await User.findOne({_id:target_id}).select('notifToken -_id')
+                const user1Token = await User.findOne({_id:user_id})
+                const user2Token = await User.findOne({_id:target_id})
                 let title= "Its a Connect"
                 let body = "You have matched with a connect"
                 let redirectUrl = "/ideabrekrr/chats"
-                await sendNotif([user1Token, user2Token],title,body, redirectUrl)
+                await sendNotif([user1Token.notifToken, user2Token.notifToken],title,body, redirectUrl)
 
                 if(action === "poke"){
                     pokesLeft= pokesLeft-1;
@@ -300,12 +300,12 @@ exports.likeProfile = async (req,res) =>{
                     if(pokesLeft>0){
 
                         // const user1token = await User.findOne({user_id:user_id}).select('notifToken -_id')
-                        const user2token = await User.findOne({user_id:target_id}).select('notifToken -_id')
+                        const user2token = await User.findOne({user_id:target_id})
                         const title =`${user1.name} has poked you`
                         const body=`Hey ${user2.name}, ${user1.name} is interested to talk with you.`
                         const imgUrl =""
                         const redirectUrl ="/ideabrekrr/profile/:id"
-                        await sendNotif([user2token], title, body, imgUrl, redirectUrl)
+                        await sendNotif([user2token.notifToken], title, body, imgUrl, redirectUrl)
                         pokesLeft = pokesLeft - 1;
                         const pokesData = await User.findOneAndUpdate({_id:user_id},{pokesLeft: pokesLeft});
                         const like = await Likes.create({user_id, target_id, user1, user2, action })
