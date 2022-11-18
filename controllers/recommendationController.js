@@ -116,7 +116,7 @@ exports.getRecommendations = async (req,res,next)=>{
             if(recommendedProfiles.length < 1){
                    
                 recommendedProfiles = await IdeaData.find({$and:[{_id: {$nin: seenProfiles}} ]}).limit(limit * 1).skip((page - 1) * limit)
-                if(recommendedProfiles.length < 2){            
+                if(recommendedProfiles.length < 1){            
                    
                      recommendedProfiles = await IdeaData.aggregate([{
                         $geoNear: {
@@ -186,7 +186,7 @@ exports.getRecommendations = async (req,res,next)=>{
             if(recommendedProfiles.length < 1){
                    
                 recommendedProfiles = await IdeaData.find({$and:[{_id: {$nin: seenProfiles}} ]}).limit(limit * 1).skip((page - 1) * limit)
-                if(recommendedProfiles.length < 2){            
+                if(recommendedProfiles.length < 1){            
                    
                     recommendedProfiles = await IdeaData.aggregate([{
                        $geoNear: {
