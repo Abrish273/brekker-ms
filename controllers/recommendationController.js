@@ -280,7 +280,7 @@ exports.likeProfile = async (req,res) =>{
                 const user2Token = await User.findOne({_id:target_id})
                 let title= "Its a Connect"
                 let body = "You have matched with a connect"
-                let redirectUrl = "/ideabrekrr/chats"
+                let redirectUrl = "/ChatScreen/ChatMessagesScreen"
                 await sendNotif([user1Token.notifToken, user2Token.notifToken],title,body, redirectUrl)
 
                 if(action === "poke"){
