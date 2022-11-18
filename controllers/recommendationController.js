@@ -129,7 +129,13 @@ exports.getRecommendations = async (req,res,next)=>{
                             spherical: true,
                             // distanceMultiplier: 0.001   
                           }
-                       }])
+                       },{
+                        $match:{
+                            $and:[
+                                 {_id: {$nin: seenProfiles}} 
+                            ]
+                        }
+                    }]).limit(limit * 1).skip((page - 1) * limit)
                 }
             }
 
@@ -199,7 +205,13 @@ exports.getRecommendations = async (req,res,next)=>{
                            spherical: true,
                            // distanceMultiplier: 0.001   
                          }
-                      }])
+                      },{
+                       $match:{
+                           $and:[
+                                {_id: {$nin: seenProfiles}} 
+                           ]
+                       }
+                   }]).limit(limit * 1).skip((page - 1) * limit)
                }
             }
 

@@ -45,7 +45,7 @@ exports.registerIdeaProfile = async (req,res,next)=>{
                 method: 'POST',
                 url: `https://${process.env.cometchat_app_id}.api-us.cometchat.io/v3/users`,
                 headers: {
-                    'apiKey': process.env.cometchat_api_key,
+                    apiKey: process.env.cometchat_api_key,
                     'Content-Type': 'application/json',
                     'Accept': 'application/json'
                 },
