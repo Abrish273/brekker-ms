@@ -300,7 +300,7 @@ exports.likeProfile = async (req,res) =>{
                     if(pokesLeft>0){
 
                         // const user1token = await User.findOne({user_id:user_id}).select('notifToken -_id')
-                        const user2token = await User.findOne({user_id:target_id})
+                        const user2token = await User.findOne({_id:target_id})
                         const title =`${user1.name} has poked you`
                         const body=`Hey ${user2.name}, ${user1.name} is interested to talk with you.`
                         const imgUrl =""
