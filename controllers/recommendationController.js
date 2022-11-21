@@ -131,15 +131,15 @@ exports.getRecommendations = async (req,res,next)=>{
                           }
                        },{
                         $match:{
-                            $and:[
-                                 {_id: {$nin: seenProfiles}} 
+                            $or:[
+                                {lookingFor: {$in: lookingFor}}, {_id: {$nin: seenProfiles}}
                             ]
                         }
                     }]).limit(limit * 1).skip((page - 1) * limit)
                 }
             }
 
-               Array.prototype.push.apply(recommendedProfiles,profilesWhoLikeYou); 
+            Array.prototype.push.apply(recommendedProfiles,profilesWhoLikeYou); 
 
             
             res.status(200).json({
@@ -207,8 +207,9 @@ exports.getRecommendations = async (req,res,next)=>{
                          }
                       },{
                        $match:{
-                           $and:[
-                                {_id: {$nin: seenProfiles}} 
+                           $or:[
+                            {lookingFor: {$in: lookingFor}}, {_id: {$nin: seenProfiles}}
+
                            ]
                        }
                    }]).limit(limit * 1).skip((page - 1) * limit)
