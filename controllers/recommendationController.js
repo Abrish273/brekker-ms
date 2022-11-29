@@ -243,6 +243,8 @@ exports.likeProfile = async (req,res) =>{
         const result = await Likes.findOne({user_id:user_id, target_id:target_id});
         const pokes = await User.findOne({_id:req.user.user_id}).select('pokesLeft -_id')
         var pokesLeft = Number(pokes.pokesLeft)
+        const user1Token = await User.findOne({_id:user_id})
+
         // console.log(result)
         if(result && result.length!==0){
             res.status(200).json({
@@ -277,7 +279,6 @@ exports.likeProfile = async (req,res) =>{
                     });
     
                 // send Notification
-                const user1Token = await User.findOne({_id:user_id})
                 const user2Token = await User.findOne({_id:target_id})
                 let title= "Its a Connect"
                 let body = "You have matched with a connect"
@@ -302,15 +303,16 @@ exports.likeProfile = async (req,res) =>{
 
                         // const user1token = await User.findOne({user_id:user_id}).select('notifToken -_id')
                         const user2token = await User.findOne({_id:target_id})
-                        const title =`${user1.name} has poked you`
-                        const body=`Hey ${user2.name}, ${user1.name} is interested to talk with you.`
+                        console.log(user2token.notifToken)
+                        const title =`${user1Token.name} has poked you`
+                        const body=`Hey ${user2token.name}, ${user1token.name} is interested to talk with you.`
                         const imgUrl =""
                         const redirectUrl ="/ideabrekrr/profile/:id"
                         await sendNotif([user2token.notifToken], title, body, imgUrl, redirectUrl)
                         pokesLeft = pokesLeft - 1;
                         const pokesData = await User.findOneAndUpdate({_id:user_id},{pokesLeft: pokesLeft});
                         const like = await Likes.create({user_id, target_id, user1, user2, action })
-                        res.status(200).json({
+                        res.status(200).json({  
                                 status:"success",
                                 like,
                                 pokesLeft, 
