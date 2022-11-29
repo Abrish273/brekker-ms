@@ -12,7 +12,7 @@ async function sendNotif(token, title, body, redirectUrl) {
   }
   var notification_body = {
     notification: notification,
-    registration_ids: [token],
+    registration_ids: token,
   }
   // return res.json(notification_body)
   try {
