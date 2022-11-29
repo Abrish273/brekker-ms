@@ -305,7 +305,7 @@ exports.likeProfile = async (req,res) =>{
                         const user2token = await User.findOne({_id:target_id})
                         console.log(user2token.notifToken)
                         const title =`${user1Token.name} has poked you`
-                        const body=`Hey ${user2token.name}, ${user1token.name} is interested to talk with you.`
+                        const body=`Hey ${user2token.name}, ${user1Token.name} is interested to talk with you.`
                         const imgUrl =""
                         const redirectUrl ="/ideabrekrr/profile/:id"
                         await sendNotif([user2token.notifToken], title, body, imgUrl, redirectUrl)
