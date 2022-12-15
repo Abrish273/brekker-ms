@@ -24,7 +24,7 @@ async function sendNotif(token, title, body, redirectUrl) {
       },
       body: JSON.stringify(notification_body),
     })
-    console.log("SUCESSSS-----------")
+    // console.log("SUCESSSS-----------")
     return ({
       msg: 'Notification Sent!!!!!',
       fcmResponse,

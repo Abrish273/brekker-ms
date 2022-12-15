@@ -37,35 +37,7 @@ exports.registerIdeaProfile = async (req,res,next)=>{
         if(user === null){
             req.body._id = req.body.user_id;
             delete req.body.user_id
-            user = await IdeaData.create(req.body);
-            const uid = req.body._id + "idea";
-            //create user for chats
-          
-            const options = {
-                method: 'POST',
-                url: `https://${process.env.cometchat_app_id}.api-us.cometchat.io/v3/users`,
-                headers: {
-                    apiKey: process.env.cometchat_api_key,
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                data: {
-                    // metadata: {'@private': {email: 'user@email.com', contactNumber: '0123456789'}},
-                    uid: uid,
-                    name: req.body.name,
-                    avatar: req.body.images[0].image_URL,
-                    withAuthToken: false,
-                }
-                };
-
-                await axios
-                .request(options)
-                .then(function (response) {
-                    console.log(response.data);
-                })
-                .catch(function (error) {
-                    console.error(error);
-                });
+            user = await IdeaData.create(req.body);            
                     
             res.status(200).json({
                 status:"success",
@@ -94,34 +66,8 @@ exports.updateIdeaProfile = async (req,res,next)=>{
             new:true,
             runValidators:true
         });
-        const uid = req.user.user_id + "idea";
 
-        //finish this
-        if(req.body.name && req.body.images &&  req.body.images[0].image_URL){
-            const options = {
-                method: 'PUT',
-                url: `https://${process.env.cometchat_app_id}.api-us.cometchat.io/v3/users/${uid}`,
-                headers: {
-                    apiKey: process.env.cometchat_api_key,
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json'
-                },
-                data: {
-                    name: req.body.name,
-                    avatar: req.body.images[0].image_URL
-                }
-                };
-
-               await axios
-                .request(options)
-                .then(function (response) {
-                    console.log(response.data);
-                })
-                .catch(function (error) {
-                    console.error(error);
-                });
-        }
-        
+       
         res.status(200).json({
             status:"success",
             user
@@ -170,42 +116,6 @@ exports.hideIdeaProfile = async(req, res, next) =>{
         const user_id = req.user.user_id+"idea"
         console.log(modeActivated)
         const user = await IdeaData.findOneAndUpdate({_id:req.user.user_id}, {modeActivated:modeActivated});
-        //finish this
-        if(modeActivated === false){
-                        
-                const options = {
-                    method: 'DELETE',
-                    url: `https://${process.env.cometchat_app_id}.api-us.cometchat.io/v3/users`,
-                    headers: {apiKey: process.env.cometchat_api_key, 'Content-Type': 'application/json', Accept: 'application/json'},
-                    data: {uidsToDeactivate:  [user_id]}
-                };
-                
-               await axios
-                    .request(options)
-                    .then(function (response) {
-                    console.log(response.data);
-                    })
-                    .catch(function (error) {
-                    console.error(error);
-                    });
-        }else{
-            const options = {
-                method: 'DELETE',
-                url: `https://${process.env.cometchat_app_id}.api-us.cometchat.io/v3/users`,
-                headers: {apiKey: process.env.cometchat_api_key, 'Content-Type': 'application/json', Accept: 'application/json'},
-                data: {uidsToDeactivate:  [user_id]}
-            };
-            
-            await axios
-                .request(options)
-                .then(function (response) {
-                console.log(response.data);
-                })
-                .catch(function (error) {
-                console.error(error);
-                });
-        }
-
 
         res.status(200).json({
             status:"success",

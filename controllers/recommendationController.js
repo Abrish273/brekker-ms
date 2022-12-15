@@ -255,29 +255,11 @@ exports.likeProfile = async (req,res) =>{
             const result1 = await Likes.findOne({user_id:target_id, target_id:user_id});
             if(result1 && result1!==0){
                 const id = result1._id
-                const data = await Likes.findOneAndUpdate({_id: id}, {
+                const matchedProfile = await Likes.findOneAndUpdate({_id: id}, {
                     status:1,
                     acceptedDate: new Date()
                 })
-                const frndid = target_id+"idea";
-                const userdid = user_id+"idea";
-                // Create a room for chat
-                const options = {
-                    method: 'POST',
-                    url: `https://${process.env.cometchat_app_id}.api-us.cometchat.io/v3/users/${userdid}/friends`,
-                    headers: {apiKey: process.env.cometchat_api_key, 'Content-Type': 'application/json', Accept: 'application/json'},
-                    data: {accepted: [`${frndid}`]}
-                    };
-    
-                   await axios
-                    .request(options)
-                    .then(function (response) {
-                        console.log(response.data);
-                    })
-                    .catch(function (error) {
-                        console.error(error);
-                    });
-    
+               
                 // send Notification
                 const user2Token = await User.findOne({_id:target_id})
                 let title= "Its a Connect"
@@ -289,10 +271,10 @@ exports.likeProfile = async (req,res) =>{
                     pokesLeft= pokesLeft-1;
                 }
 
-                
                 res.status(200).json({
                     status:"success",
                     msg:"Its a Match",
+                    matchedProfile,
                     pokesLeft
                 })
             }else {
@@ -396,7 +378,7 @@ exports.disLikeProfile = async (req,res) =>{
 exports.likedProfiles = async (req,res) =>{
     try {
         const user_id = req.body.user_id;
-        const whoLikesMe = await Likes.find({$and:[{target_id:user_id}, {status:0}]}).sort({createdAt:-1}).select('user_id user1 action')
+        const whoLikesMe = await Likes.find({$and:[{target_id:user_id}, {status:0}]}).sort({createdAt:-1}).sort({createdAt:-1})
 
         res.status(200).json({
             status:"success",
@@ -406,7 +388,6 @@ exports.likedProfiles = async (req,res) =>{
         res.status(500).json({
             status:"fail",
             msg:"Internal Server Error"
-
         })
     }
 }

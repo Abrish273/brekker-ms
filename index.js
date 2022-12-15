@@ -2,7 +2,8 @@ const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
 const dotenv = require("dotenv")
-const middleware = require('./middleware/index');
+// const middleware = require('./middleware/index');
+const { validateAuth } = require('./middleware/auth')
 
 const ideaRouter = require("./routes/ideaRoutes")
 
@@ -23,9 +24,10 @@ dotenv.config()
 app.enable("trust proxy");
 app.use(cors({}))
 app.use(express.json())
-//Middleware
-app.use(middleware.decodeToken);
-
+//Middleware Firebase
+// app.use(middleware.decodeToken);
+//Middleware AWS Cognito
+app.use(validateAuth);
 
 
 app.use("/ideabrekrr", ideaRouter)
