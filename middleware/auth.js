@@ -4,7 +4,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 // Setup CognitoExpress
 const cognitoExpress = new CognitoExpress({
-  region: process.env.AWS_DEFAULT_REGION,
+  region: process.env.COGNITO_DEFAULT_REGION,
   cognitoUserPoolId: process.env.COGNITO_USER_POOL_ID,
   tokenUse: "access",
   tokenExpiration: 3600
