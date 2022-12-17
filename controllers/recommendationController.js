@@ -73,7 +73,19 @@ exports.getRecommendations = async (req,res,next)=>{
         // console.log(lookingFor1)
         var { page = 1, limit = 50 } = req.query;
 
-        var seenProfiles = await Likes.find({user_id:req.user.user_id}).distinct('target_id')
+        var seenProfiles0 = await Likes.find({user_id:req.user.user_id}).distinct('target_id')
+        var matchedProfiles = await Likes.find({$and:[{user_id:req.user.user_id}, {status:1}]}).distinct('target_id')
+        var matchedProfiles1 = await Likes.find({$and:[{target_id:req.user.user_id}, {status:1}]}).distinct('user_id')
+
+        // console.log(matchedProfiles)
+        // console.log(matchedProfiles1)
+        var seenProfiles1 = [...seenProfiles0, ...matchedProfiles, ...matchedProfiles1]
+
+        // removing duplicate
+        var seenProfiles = [...new Set(seenProfiles1)];
+
+        // console.log(seenProfiles)
+
         seenProfiles.push(req.user.user_id)
 
         const whoLikeYou = await Likes.find({target_id:req.user.user_id, status:0}).distinct('_id')
@@ -285,7 +297,7 @@ exports.likeProfile = async (req,res) =>{
 
                         // const user1token = await User.findOne({user_id:user_id}).select('notifToken -_id')
                         const user2token = await User.findOne({_id:target_id})
-                        console.log(user2token.notifToken)
+                        // console.log(user2token.notifToken)
                         const title =`${user1Token.name} has poked you`
                         const body=`Hey ${user2token.name}, ${user1Token.name} is interested to talk with you.`
                         const imgUrl =""
@@ -293,7 +305,8 @@ exports.likeProfile = async (req,res) =>{
                         await sendNotif([user2token.notifToken], title, body, imgUrl, redirectUrl)
                         pokesLeft = pokesLeft - 1;
                         const pokesData = await User.findOneAndUpdate({_id:user_id},{pokesLeft: pokesLeft});
-                        const like = await Likes.create({user_id, target_id, user1, user2, action })
+                        var status =0;
+                        const like = await Likes.create({user_id, target_id, user1, user2, action, status })
                         res.status(200).json({  
                                 status:"success",
                                 like,
@@ -330,7 +343,7 @@ exports.disLikeProfile = async (req,res) =>{
   try {
         const {user_id, target_id} = req.body;
         const result = await Likes.findOne({user_id:user_id, target_id:target_id});
-        console.log(result)
+        // console.log(result)
         if(result && result.length!==0){
             const id = result._id
             const data = await Likes.findOneAndUpdate({_id: id}, {
@@ -343,7 +356,7 @@ exports.disLikeProfile = async (req,res) =>{
             })
         }else{
             const result1 = await Likes.findOne({user_id:target_id, target_id:user_id});
-            console.log(result1)
+            // console.log(result1)
             if(result1 && result1!==0){
                 const id = result1._id
                 const data = await Likes.findOneAndUpdate({_id: id}, {
@@ -377,8 +390,8 @@ exports.disLikeProfile = async (req,res) =>{
 
 exports.likedProfiles = async (req,res) =>{
     try {
-        const user_id = req.body.user_id;
-        const whoLikesMe = await Likes.find({$and:[{target_id:user_id}, {status:0}]}).sort({createdAt:-1}).sort({createdAt:-1})
+        const user_id = req.user.user_id;
+        const whoLikesMe = await Likes.find({$and:[{target_id:user_id}, {status:0}]}).sort({createdAt:-1})
 
         res.status(200).json({
             status:"success",
@@ -394,12 +407,12 @@ exports.likedProfiles = async (req,res) =>{
 
 exports.matchedProfiles = async (req,res) =>{
     try {
-        const user_id = req.body.user_id;
-        const whoLikesMe = await Likes.find({$and:[{$or:[{user_id:user_id},{target_id:user_id}]}, {status:1}]}).sort({createdAt:-1})
+        const user_id = req.user.user_id;
+        const matchedProfiles = await Likes.find({$and:[{$or:[{user_id:user_id},{target_id:user_id}]}, {status:1}]}).sort({createdAt:-1})
         
         res.status(200).json({
             status:"success",
-            whoLikesMe
+            matchedProfiles
         })
     } catch (error) {
         res.status(500).json({

@@ -22,7 +22,7 @@ exports.validateAuth = (req, res, next) => {
       } else {
         //Else API has been authenticated. Proceed.
         //todo: storing user id in requests from middleware
-        console.log(response)     
+        // console.log(response)     
 
         req.user = {}
         req.user.user_id = response.sub

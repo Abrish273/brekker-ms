@@ -114,7 +114,7 @@ exports.hideIdeaProfile = async(req, res, next) =>{
     try {
         const modeActivated = req.query.modeActivated;
         const user_id = req.user.user_id+"idea"
-        console.log(modeActivated)
+        // console.log(modeActivated)
         const user = await IdeaData.findOneAndUpdate({_id:req.user.user_id}, {modeActivated:modeActivated});
 
         res.status(200).json({
