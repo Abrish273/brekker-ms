@@ -81,12 +81,12 @@ exports.getRecommendations = async (req,res,next)=>{
         // console.log(matchedProfiles1)
         var seenProfiles1 = [...seenProfiles0, ...matchedProfiles, ...matchedProfiles1]
 
+        seenProfiles1.push(req.user.user_id)
         // removing duplicate
         var seenProfiles = [...new Set(seenProfiles1)];
 
-        // console.log(seenProfiles)
-
-        seenProfiles.push(req.user.user_id)
+        
+        console.log(seenProfiles)
 
         const whoLikeYou = await Likes.find({target_id:req.user.user_id, status:0}).distinct('_id')
         var profilesWhoLikeYou = await IdeaData.find({_id: {$in:whoLikeYou}}).limit(limit * 1).skip((page - 1) * limit).lean();
