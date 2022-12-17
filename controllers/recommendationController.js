@@ -320,7 +320,9 @@ exports.likeProfile = async (req,res) =>{
                         })
                     }
                 }else{
-                    const like = await Likes.create({user_id, target_id, user1, user2, action })
+                    var status =0;
+
+                    const like = await Likes.create({user_id, target_id, user1, user2, action, status })
                     res.status(200).json({
                         status:"success",
                         like
