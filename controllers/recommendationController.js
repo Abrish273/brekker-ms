@@ -86,7 +86,7 @@ exports.getRecommendations = async (req,res,next)=>{
         var seenProfiles = [...new Set(seenProfiles1)];
 
         
-        console.log(seenProfiles)
+        // console.log(seenProfiles)
 
         const whoLikeYou = await Likes.find({target_id:req.user.user_id, status:0}).distinct('_id')
         var profilesWhoLikeYou = await IdeaData.find({_id: {$in:whoLikeYou}}).limit(limit * 1).skip((page - 1) * limit).lean();
