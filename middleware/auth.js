@@ -27,7 +27,7 @@ exports.validateAuth = (req, res, next) => {
         req.user = {}
         req.user.user_id = response.sub
         req.user.username = response.username
-        req.user.signInProvider =  response.scope
+        // req.user.signInProvider =  response.scope
         req.user.name =  response.name
         req.user.email =  response.email
         req.user.phone =  response.phone
