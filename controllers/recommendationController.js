@@ -144,7 +144,7 @@ exports.getRecommendations = async (req,res,next)=>{
                        },{
                         $match:{
                             $or:[
-                                {lookingFor: {$in: lookingFor}}, {_id: {$nin: seenProfiles}}
+                                {lookingFor: {$in: lookingFor1}}, {_id: {$nin: seenProfiles}}
                             ]
                         }
                     }]).limit(limit * 1).skip((page - 1) * limit)
@@ -220,7 +220,7 @@ exports.getRecommendations = async (req,res,next)=>{
                       },{
                        $match:{
                            $or:[
-                            {lookingFor: {$in: lookingFor}}, {_id: {$nin: seenProfiles}}
+                            {lookingFor: {$in: lookingFor1}}, {_id: {$nin: seenProfiles}}
 
                            ]
                        }
