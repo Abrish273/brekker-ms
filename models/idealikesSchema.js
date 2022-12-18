@@ -12,7 +12,7 @@ const likesSchema = new mongoose.Schema({
         username:{type: String},
         user_image:{type: String} 
     },
-    status:{type: Number },// [0=pending, 1= accepted, -1 = rejected, -2 = blocked/Reported]
+    status:{type: Number, default: 0  },// [0=pending, 1= accepted, -1 = rejected, -2 = blocked/Reported]
     likedOn : { type : Date, default: Date.now() },
     acceptedOn : { type : Date },
 }, { timestamps: true })
