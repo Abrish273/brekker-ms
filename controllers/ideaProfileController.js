@@ -1,5 +1,7 @@
 const IdeaData = require('../models/ideaDataModel')
 const IdeaBlocked = require('../models/ideaBlockModel')
+const Likes = require('../models/idealikesSchema');
+
 const axios = require('axios').default;
 
 exports.getIdeaProfile = async (req,res,next)=>{
@@ -94,7 +96,37 @@ exports.reportProfile = async(res, req, next) =>{
                 msg:"User have been already Blocked"
             })
         }else{
-            const blocked = await IdeaBlocked.create({user_id, target_id, blockedOn})
+
+            const result = await Likes.findOne({user_id:user_id, target_id:target_id});
+            var status = -2
+            if(result && result.length!==0){
+                const result1 = await Likes.findByIdAndUpdate(result._id, {status: status})    
+                const blocked = await IdeaBlocked.create({user_id, target_id, blockedOn})
+                res.status(200).json({
+                    status:"success",
+                    msg:"User have been Blocked"
+                })
+            }else{
+                const result22 = await Likes.findOne({user_id:target_id, target_id:user_id});
+                if(result22 && result22.length!==0){
+                    const result3 = await Likes.findByIdAndUpdate(result22._id, {status: status})               
+                    const blocked = await IdeaBlocked.create({user_id, target_id, blockedOn})
+                    res.status(200).json({
+                        status:"success",
+                        msg:"User have been Blocked"
+                    })
+                }else{
+                    var action ="block"
+                    const like11 = await Likes.create({user_id, target_id, action, status })       
+                    const blocked = await IdeaBlocked.create({user_id, target_id, blockedOn})
+
+                    res.status(200).json({
+                        status:"success",
+                        msg:"User have been Blocked"
+                    })
+                }
+            }
+
             res.status(200).json({
                 status:"success",
                 msg:"User have been Blocked"
