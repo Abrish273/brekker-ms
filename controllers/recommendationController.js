@@ -278,9 +278,9 @@ exports.likeProfile = async (req,res) =>{
                 let title= "Its a Connect"
                 let body = "You have matched with a connect"
                 let redirectUrl = ""
-                var data1 = matchedProfile
+                var notifData = matchedProfile
 
-                await sendNotif([user1Token.notifToken, user2Token.notifToken],title,body, redirectUrl, data1)
+                await sendNotif([user1Token.notifToken, user2Token.notifToken],title,body, redirectUrl, notifData)
 
                 if(action === "poke"){
                     pokesLeft= pokesLeft-1;
@@ -307,8 +307,8 @@ exports.likeProfile = async (req,res) =>{
                         const redirectUrl =""
                         var status =0;
                         const like = await Likes.create({user_id, target_id, user1, user2, action, status })
-                        var data1 = like
-                        await sendNotif([user2token.notifToken], title, body, imgUrl, redirectUrl, data1)
+                        var notifData = like
+                        await sendNotif([user2token.notifToken], title, body, imgUrl, redirectUrl, notifData)
                         pokesLeft = pokesLeft - 1;
                         const pokesData = await User.findOneAndUpdate({_id:user_id},{pokesLeft: pokesLeft});
                         res.status(200).json({  
