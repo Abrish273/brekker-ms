@@ -88,6 +88,7 @@ exports.reportProfile = async(res, req, next) =>{
         const {target_id} = req.body;
         const user_id = req.user.user_id;
         const blockedOn = new Date();
+        var status = -2
 
         const checkBlocked = await IdeaBlocked.findOne({$or:[{user_id:user_id,target_id:target_id},{user_id:target_id,target_id:user_id}]})
         if(checkBlocked !== null){
@@ -98,7 +99,6 @@ exports.reportProfile = async(res, req, next) =>{
         }else{
 
             const result = await Likes.findOne({user_id:user_id, target_id:target_id});
-            var status = -2
             if(result && result.length!==0){
                 const result1 = await Likes.findByIdAndUpdate(result._id, {status: status})    
                 const blocked = await IdeaBlocked.create({user_id, target_id, blockedOn})
