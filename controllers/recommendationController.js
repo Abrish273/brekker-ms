@@ -240,7 +240,8 @@ exports.getRecommendations = async (req,res,next)=>{
         }
 
     } catch (e) {
-        console.log(e)
+        console.log("Error from recommendations route: "+e)
+
         res.status(500).json({
             status:"fail",
             msg:"Internal Server Error"
@@ -332,7 +333,7 @@ exports.likeProfile = async (req,res) =>{
         }
 
     } catch (error) {
-        console.log(error)
+        console.log("Error from like/poke route: "+error)
         res.status(500).json({
             status:"fail",
             msg:"Internal Server Error"
@@ -380,7 +381,7 @@ exports.disLikeProfile = async (req,res) =>{
             }
         }
     } catch (error) {
-        console.log(error)
+        console.log("Error from dislike profile route: "+error)
         res.status(500).json({
             status:"fail",
             msg:"Internal Server Error"
@@ -400,8 +401,7 @@ exports.likedProfiles = async (req,res) =>{
             whoLikesMe
         })
     } catch (error) {
-        console.log(error)
-
+        console.log("Error from likedProfiles route: "+error)
         res.status(500).json({
             status:"fail",
             msg:"Internal Server Error"
@@ -427,7 +427,7 @@ exports.matchedProfiles = async (req,res) =>{
             pokedProfiles
         })
     } catch (error) {
-        console.log(error)
+        console.log("Error from matched profiles route: "+error)
         res.status(500).json({
             status:"fail",
             msg:"Internal Server Error"
@@ -472,12 +472,10 @@ exports.AroundMe = async (req,res) =>{
              profilesNearMe,
  
          })
- 
-
-
 
     } catch (error) {
-        console.log(error)
+        console.log("Error from AroundMe route: "+error)
+
         res.status(500).json({
             status:"fail",
             msg:"Internal Server Error"

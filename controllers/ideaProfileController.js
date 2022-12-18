@@ -25,7 +25,7 @@ exports.getIdeaProfile = async (req,res,next)=>{
             })
         }
     } catch (e) {
-        console.log(e)
+        console.log("Error from get profile route: "+e)
         res.status(500).json({
             status:"fail",
             msg:"Internal Server Error"
@@ -55,7 +55,7 @@ exports.registerIdeaProfile = async (req,res,next)=>{
 
      
     } catch (e) {
-        console.log(e)
+        console.log("Error from register profile route: "+e)
         res.status(500).json({
             status:"fail",
             msg:"Internal Server Error"
@@ -75,7 +75,7 @@ exports.updateIdeaProfile = async (req,res,next)=>{
             user
         })
     } catch (e) {
-        console.log(e)
+        console.log("Error from update profile route: "+e)
         res.status(500).json({
             status:"fail",
             msg:"Internal Server Error"
@@ -134,6 +134,7 @@ exports.reportProfile = async(res, req, next) =>{
         }
 
     } catch (error) {
+        console.log("Error from report route: "+error)
         res.status(500).json({
             status:"fail",
             msg:"Internal Server Error"
@@ -154,7 +155,7 @@ exports.hideIdeaProfile = async(req, res, next) =>{
             user
         })
     } catch (e) {
-        console.log("Error from route: "+e)
+        console.log("Error from hide route: "+e)
         res.status(500).json({
             status:"fail",
             msg:"Internal Server Error"
