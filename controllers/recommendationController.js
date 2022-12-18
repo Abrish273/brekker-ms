@@ -419,7 +419,7 @@ exports.matchedProfiles = async (req,res) =>{
         // console.log(d);
         // const date2 = new Date.now();
         const matchedProfiles = await Likes.find({$and:[{$or:[{user_id:user_id},{target_id:user_id}]}, {status:1}]}).sort({createdAt:-1})
-        const pokedProfiles = await Likes.find({$and:[{target_id:user_id}, {status:0}, {action: "poke"}, {likedOn :{$lte : date1}}]}).sort({createdAt:-1})
+        const pokedProfiles = await Likes.find({$and:[{target_id:user_id}, {status:0}, {action: "poke"}, {likedOn :{$gte : date1, $lte:date2}}]}).sort({createdAt:-1})
         
         res.status(200).json({
             status:"success",
