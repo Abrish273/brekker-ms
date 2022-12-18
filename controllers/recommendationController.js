@@ -380,7 +380,7 @@ exports.disLikeProfile = async (req,res) =>{
             }
         }
     } catch (error) {
-        // console.log(error)
+        console.log(error)
         res.status(500).json({
             status:"fail",
             msg:"Internal Server Error"
@@ -400,6 +400,8 @@ exports.likedProfiles = async (req,res) =>{
             whoLikesMe
         })
     } catch (error) {
+        console.log(error)
+
         res.status(500).json({
             status:"fail",
             msg:"Internal Server Error"
@@ -410,13 +412,22 @@ exports.likedProfiles = async (req,res) =>{
 exports.matchedProfiles = async (req,res) =>{
     try {
         const user_id = req.user.user_id;
+        var date1 = new Date();
+        var date2 = new Date();
+        date1.setDate(date1.getDate()-1);
+        date2.setDate(date2.getDate()+1);
+        // console.log(d);
+        // const date2 = new Date.now();
         const matchedProfiles = await Likes.find({$and:[{$or:[{user_id:user_id},{target_id:user_id}]}, {status:1}]}).sort({createdAt:-1})
+        const pokedProfiles = await Likes.find({$and:[{target_id:user_id}, {status:0}, {action: "poke"}, {likedOn :{$lte : date1}}]}).sort({createdAt:-1})
         
         res.status(200).json({
             status:"success",
-            matchedProfiles
+            matchedProfiles,
+            pokedProfiles
         })
     } catch (error) {
+        console.log(error)
         res.status(500).json({
             status:"fail",
             msg:"Internal Server Error"
