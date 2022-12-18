@@ -1,6 +1,6 @@
 const fetch = require('node-fetch')
 
-async function sendNotif(token, title, body, redirectUrl) {
+async function sendNotif(token, title, body, redirectUrl, data1) {
 
   //send notifications to users
   var notification = {
@@ -13,6 +13,7 @@ async function sendNotif(token, title, body, redirectUrl) {
   var notification_body = {
     notification: notification,
     registration_ids: token,
+    data:data1
   }
   // return res.json(notification_body)
   try {
@@ -25,6 +26,7 @@ async function sendNotif(token, title, body, redirectUrl) {
       body: JSON.stringify(notification_body),
     })
     // console.log("SUCESSSS-----------")
+    // console.log(fcmResponse)
     return ({
       msg: 'Notification Sent!!!!!',
       fcmResponse,
