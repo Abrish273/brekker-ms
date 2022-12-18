@@ -1,6 +1,7 @@
 const IdeaData = require('../models/ideaDataModel')
 const IdeaBlocked = require('../models/ideaBlockModel')
 const Likes = require('../models/idealikesSchema');
+const {sendNotif} =require('./Notifs')
 
 const axios = require('axios').default;
 
@@ -156,6 +157,24 @@ exports.hideIdeaProfile = async(req, res, next) =>{
         })
     } catch (e) {
         console.log("Error from hide route: "+e)
+        res.status(500).json({
+            status:"fail",
+            msg:"Internal Server Error"
+        })
+    }
+}
+
+exports.notifTest = async(req, res, next) =>{
+    try {
+        const {notifToken, title, body, redirectUrl} = req.body
+        await sendNotif([notifToken],title,body, redirectUrl)
+
+        res.status(200).json({
+            status:"success",
+            msg:"notif Sent"
+        })
+    } catch (e) {
+        console.log("Error from notif route: "+e)
         res.status(500).json({
             status:"fail",
             msg:"Internal Server Error"
