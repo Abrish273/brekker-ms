@@ -15,7 +15,7 @@ async function sendNotif(token, title, body, redirectUrl, notifData) {
     registration_ids: token,
     data:notifData
   }
-  // return res.json(notification_body)
+
   try {
     let fcmResponse = await fetch('https://fcm.googleapis.com/fcm/send', {
       method: 'POST',
