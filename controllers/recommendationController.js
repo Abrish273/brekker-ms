@@ -303,12 +303,13 @@ exports.likeProfile = async (req,res) =>{
                         // console.log(user2token.notifToken)
                         const title =`${user1Token.name} has poked you`
                         const body=`Hey ${user2token.name}, ${user1Token.name} is interested to talk with you.`
-                        const imgUrl =""
                         const redirectUrl =""
                         var status =0;
                         const like = await Likes.create({user_id, target_id, user1, user2, action, status })
+                        console.log(typeof(like))
                         var notifData = like
-                        await sendNotif([user2token.notifToken], title, body, imgUrl, redirectUrl, notifData)
+                        var test1 = await sendNotif([user2token.notifToken], title, body, redirectUrl, notifData)
+                        // console.log(test1)
                         pokesLeft = pokesLeft - 1;
                         const pokesData = await User.findOneAndUpdate({_id:user_id},{pokesLeft: pokesLeft});
                         res.status(200).json({  
@@ -325,6 +326,8 @@ exports.likeProfile = async (req,res) =>{
                     }
                 }else{
                     var status =0;
+                    console.log(user1)
+                    console.log(user2)
 
                     const like = await Likes.create({user_id, target_id, user1, user2, action, status })
                     res.status(200).json({
