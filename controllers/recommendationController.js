@@ -275,7 +275,7 @@ exports.likeProfile = async (req,res) =>{
                
                 // send Notification
                 const user2Token = await User.findOne({_id:target_id})
-                let title= "Its a Connect"
+                let title= "Its a Connect✨"
                 let body = "You have matched with a connect"
                 let redirectUrl = ""
                 var notifData = matchedProfile
@@ -301,12 +301,12 @@ exports.likeProfile = async (req,res) =>{
                         // const user1token = await User.findOne({user_id:user_id}).select('notifToken -_id')
                         const user2token = await User.findOne({_id:target_id})
                         // console.log(user2token.notifToken)
-                        const title =`${user1Token.name} has poked you`
+                        const title =`${user1Token.name} has poked you🤌`
                         const body=`Hey ${user2token.name}, ${user1Token.name} is interested to talk with you.`
                         const redirectUrl =""
                         var status =0;
                         const like = await Likes.create({user_id, target_id, user1, user2, action, status })
-                        console.log(typeof(like))
+                        // console.log(typeof(like))
                         var notifData = like
                         var test1 = await sendNotif([user2token.notifToken], title, body, redirectUrl, notifData)
                         // console.log(test1)
