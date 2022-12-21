@@ -143,7 +143,7 @@ exports.getRecommendations = async (req,res,next)=>{
                           }
                        },{
                         $match:{
-                            $or:[
+                            $and:[
                                 {lookingFor: {$in: lookingFor1}}, {_id: {$nin: seenProfiles}}
                             ]
                         }
